@@ -34,12 +34,12 @@ class UserControllerTest {
     }
 
     @Test
-    void GetMappingRCode() throws Exception {
+    void getMappingRCode() throws Exception {
         mockMvc.perform(get("/users")).andExpect(status().isOk());
     }
 
     @Test
-    void PostMappingRCode() throws Exception {
+    void postMappingRCode() throws Exception {
         User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
         User newUser = User.create(user);
         String userString = gson.toJson(newUser);
@@ -51,7 +51,7 @@ class UserControllerTest {
     }
 
     @Test
-    void PostMappingRCodeWhenInvalidBody() throws Exception {
+    void postMappingRCodeWhenInvalidBody() throws Exception {
         User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(2229, 2, 26));
         User newUser = User.create(user);
         String userString = gson.toJson(newUser);
@@ -63,7 +63,7 @@ class UserControllerTest {
     }
 
     @Test
-    void PostMappingRCodeWhenBodyIsEmpty() throws Exception {
+    void postMappingRCodeWhenBodyIsEmpty() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
@@ -71,7 +71,7 @@ class UserControllerTest {
     }
 
     @Test
-    void PutMappingRCode() throws Exception {
+    void putMappingRCode() throws Exception {
         User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
         User userInfoToUpdate = User.create(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
@@ -83,7 +83,7 @@ class UserControllerTest {
     }
 
     @Test
-    void PutMappingRCodeWhenInvalidBody() throws Exception {
+    void putMappingRCodeWhenInvalidBody() throws Exception {
         User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(2222, 2, 26));
         User userInfoToUpdate = User.create(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
@@ -95,7 +95,7 @@ class UserControllerTest {
     }
 
     @Test
-    void PutMappingRCodeWhenInvalidID() throws Exception {
+    void putMappingRCodeWhenInvalidID() throws Exception {
         User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
         User userInfoToUpdate = User.create(user);
         userInfoToUpdate.setId(404L);

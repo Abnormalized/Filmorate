@@ -36,12 +36,12 @@ class FilmControllerTest {
     }
 
     @Test
-    void GetMappingRCode() throws Exception {
+    void getMappingRCode() throws Exception {
         mockMvc.perform(get("/films")).andExpect(status().isOk());
     }
 
     @Test
-    void PostMappingRCode() throws Exception {
+    void postMappingRCode() throws Exception {
         Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
         Film newFilm = Film.create(film);
         String filmString = gson.toJson(newFilm);
@@ -53,7 +53,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void PostMappingRCodeWhenInvalidBody() throws Exception {
+    void postMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film("", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
         Film newFilm = Film.create(film);
         String filmString = gson.toJson(newFilm);
@@ -65,7 +65,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void PostMappingRCodeWhenBodyIsEmpty() throws Exception {
+    void postMappingRCodeWhenBodyIsEmpty() throws Exception {
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
@@ -73,7 +73,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void PutMappingRCode() throws Exception {
+    void putMappingRCode() throws Exception {
         Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
@@ -85,7 +85,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void PutMappingRCodeWhenInvalidBody() throws Exception {
+    void putMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film("", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
@@ -97,7 +97,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void PutMappingRCodeWhenInvalidID() throws Exception {
+    void putMappingRCodeWhenInvalidID() throws Exception {
         Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         filmInfoToUpdate.setId(404L);
