@@ -45,7 +45,7 @@ public class User {
 
     public static User create(User user) {
         log.info("Запрос на создание пользователя");
-        if (user.getName() == null || user.getName().isBlank()){
+        if (user.getName() == null || user.getName().isBlank()) {
             log.trace("Имя пользователя было выдано автоматически");
             user.setName(user.getLogin());
         }
