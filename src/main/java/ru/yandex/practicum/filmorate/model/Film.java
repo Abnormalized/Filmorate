@@ -1,15 +1,14 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
+import ru.yandex.practicum.filmorate.validator.NotNegativeDuration;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -20,30 +19,23 @@ import java.util.*;
 @Slf4j
 public class Film {
     public static final Map<Long, Film> films = new HashMap<>();
-    private static final LocalDate FILM_INVENTION_DAY = LocalDate.of(1895, 12, 28);
 
     private long id;
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
     @Size(max = 200, message = "Слишком длинное описание (max:200)")
     private String description;
+    @NotBeforeDate(value = "1895-12-28", message = "Дата не может быть раньше дня создания кинемотографии")
     private LocalDate releaseDate;
     @NotNull
+    @NotNegativeDuration
     private Duration duration;
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {
-        if (releaseDate != null && releaseDate.isBefore(FILM_INVENTION_DAY)) {
-            log.warn("Задана дата выхода фильма: {}", releaseDate);
-            throw new ValidationException("Введены некорректные данные");
-        } else if (duration != null && duration.isNegative()) {
-            log.warn("Задана длительность фильма: {}", duration);
-            throw new ValidationException("Введены некорректные данные");
-        }
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = Duration.ofSeconds(duration.getSeconds());
-        setId(newId());
     }
 
     public long getDuration() {
@@ -51,19 +43,19 @@ public class Film {
     }
 
     public static Collection<Film> findAll() {
-        log.info("Запрос на выдачу всех фильмов");
         return films.values();
     }
 
     public static Film create(@RequestBody Film film) {
-        log.info("Запрос на создание фильма");
+        log.debug("Запрос на создание фильма");
+        film.setId(newId());
         films.put(film.getId(), film);
-        log.debug("Фильм добавлен в список фильмов под ID:{}", film.getId());
+        log.info("Создан фильм ID:{}, Name:{}", film.getId(), film.getName());
         return film;
     }
 
     public static Film update(@RequestBody Film filmNewInfo) {
-        log.info("Запрос на обновление данных о фильме");
+        log.debug("Запрос на обновление данных о фильме");
         if (!films.containsKey(filmNewInfo.getId())) {
             log.warn("Запрашиваемый фильм с ID: {} не найден", filmNewInfo.getId());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -73,8 +65,8 @@ public class Film {
         film.setDescription(Objects.requireNonNullElse(filmNewInfo.getDescription(), film.getDescription()));
         film.setReleaseDate(Objects.requireNonNullElse(filmNewInfo.getReleaseDate(), film.getReleaseDate()));
         film.setDuration(Objects.requireNonNullElse(Duration.ofSeconds(filmNewInfo.getDuration()),
-                Duration.ofSeconds(film.getDuration())));
-        log.debug("Данные о фильме обновлены");
+                        Duration.ofSeconds(film.getDuration())));
+        log.info("Обновлены данные о фильме ID:{}, Name:{}", film.getId(), film.getName());
         return film;
     }
 
@@ -85,7 +77,7 @@ public class Film {
                 .mapToLong(id -> id)
                 .max()
                 .orElse(0);
-        log.debug("Выданный ID: {}", (currentMaxId + 1));
+        log.debug("Выдан ID:{}", (currentMaxId + 1));
         return ++currentMaxId;
     }
 }
