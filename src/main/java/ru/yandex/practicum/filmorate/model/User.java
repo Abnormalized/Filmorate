@@ -18,14 +18,14 @@ public class User {
     public static final Map<Long, User> users = new HashMap<>();
 
     private long id;
-    @Email(message = "Некорректный формат введеного email")
-    @NotEmpty(message = "Поле email не может быть пустым")
+    @Email
+    @NotEmpty
     private String email;
-    @NotBlank(message = "Поле login не может быть пустым")
+    @NotBlank
     @NotContains(value = " !@#$%^&*()_+|<,.>:;'[]{}-=")
     private String login;
     private String name;
-    @Past(message = "Введена некорректная дата рождения")
+    @Past
     private LocalDate birthday;
 
     public User(String email, String login, String name, LocalDate birthday) {

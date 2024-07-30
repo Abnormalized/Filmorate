@@ -4,11 +4,11 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.time.DurationMin;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
-import ru.yandex.practicum.filmorate.validator.NotNegativeDuration;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -21,14 +21,14 @@ public class Film {
     public static final Map<Long, Film> films = new HashMap<>();
 
     private long id;
-    @NotBlank(message = "Название фильма не может быть пустым")
+    @NotBlank
     private String name;
-    @Size(max = 200, message = "Слишком длинное описание (max:200)")
+    @Size(max = 200)
     private String description;
     @NotBeforeDate(value = "1895-12-28", message = "Дата не может быть раньше дня создания кинемотографии")
     private LocalDate releaseDate;
     @NotNull
-    @NotNegativeDuration
+    @DurationMin
     private Duration duration;
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {

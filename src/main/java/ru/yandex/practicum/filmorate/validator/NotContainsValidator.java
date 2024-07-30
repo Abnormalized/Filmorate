@@ -15,10 +15,13 @@ public class NotContainsValidator implements ConstraintValidator<NotContains, St
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        for (Character anotherChar : notAllowedCharsString.toCharArray()) {
-            if (value.contains(anotherChar.toString())) {
-                return false;
+        if (value != null) {
+            for (Character anotherChar : notAllowedCharsString.toCharArray()) {
+                if (value.contains(anotherChar.toString())) {
+                    return false;
+                }
             }
+            return true;
         }
         return true;
     }
