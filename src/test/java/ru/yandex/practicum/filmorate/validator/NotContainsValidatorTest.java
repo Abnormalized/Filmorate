@@ -22,14 +22,22 @@ class NotContainsValidatorTest {
 
     @Test
     public void validLoginShouldPass() {
-        User user = new User("me@ya.ru", "Leather", "Jack", LocalDate.of(1999, 9, 9));
+        User user = new User();
+        user.setEmail("me@ya.ru");
+        user.setLogin("Leather");
+        user.setName("Jack");
+        user.setBirthday(LocalDate.of(1999, 9, 9));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void loginWithWhitespaceShouldFail() {
-        User user = new User("me@ya.ru", "Lea ther", "Jack", LocalDate.of(1999, 9, 9));
+        User user = new User();
+        user.setEmail("me@ya.ru");
+        user.setLogin("Lea ther");
+        user.setName("Jack");
+        user.setBirthday(LocalDate.of(1999, 9, 9));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
     }
@@ -41,7 +49,11 @@ class NotContainsValidatorTest {
         for (char symbol : someSymbols.toCharArray()) {
             String login = "Leather" + symbol;
             System.out.println(login);
-            User user = new User("me@ya.ru", login, "Jack", LocalDate.of(1999, 9, 9));
+            User user = new User();
+            user.setEmail("me@ya.ru");
+            user.setLogin(login);
+            user.setName("Jack");
+            user.setBirthday(LocalDate.of(1999, 9, 9));
             Set<ConstraintViolation<User>> violations = validator.validate(user);
             if (violations.isEmpty()) {
                 testPassed = false;

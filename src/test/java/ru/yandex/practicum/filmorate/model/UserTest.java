@@ -17,7 +17,11 @@ class UserTest {
     void addingToMapWhenCreated() {
         int creatingTimes = 13;
         for (int i = 0; i < creatingTimes; i++) {
-            User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
+            User user = new User();
+            user.setEmail("email@mail.mail");
+            user.setLogin("MyLogin");
+            user.setName("MyName");
+            user.setBirthday(LocalDate.of(1999, 2, 26));
             User.create(user);
         }
 
@@ -29,7 +33,11 @@ class UserTest {
         int creatingTimes = 13;
         User lastAddedUser = null;
         for (int i = 0; i < creatingTimes; i++) {
-            User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
+            User user = new User();
+            user.setEmail("email@mail.mail");
+            user.setLogin("MyLogin");
+            user.setName("MyName");
+            user.setBirthday(LocalDate.of(1999, 2, 26));
             lastAddedUser = User.create(user);
         }
 

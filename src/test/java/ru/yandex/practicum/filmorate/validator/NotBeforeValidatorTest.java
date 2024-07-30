@@ -23,32 +23,44 @@ class NotBeforeValidatorTest {
 
     @Test
     public void validDateShouldPass() {
-        Film film = new Film("Аркейн", "Лучший мультфильм вселенной",
-                LocalDate.of(2021, 11, 6), Duration.ofSeconds(22380));
+        Film film = new Film();
+        film.setName("Аркейн");
+        film.setDescription("Лучший мультфильм вселенной");
+        film.setReleaseDate(LocalDate.of(2021, 11, 6));
+        film.setDuration(Duration.ofSeconds(22380));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void invalidDateShouldFail() {
-        Film film = new Film("Свадебная ваза", "Артхаус, который мы не заслуживаем, но получили",
-                LocalDate.of(1874, 4, 11), Duration.ofSeconds(4860));
+        Film film = new Film();
+        film.setName("Свадебная ваза");
+        film.setDescription("Артхаус, который мы не заслуживаем, но получили");
+        film.setReleaseDate(LocalDate.of(1874, 4, 11));
+        film.setDuration(Duration.ofSeconds(4860));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void theFirstAllowedDayShouldPass() {
-        Film film = new Film("Прибытие поезда на вокзал Ла-Сьота́", "Первый фильм в истории человечества",
-                LocalDate.of(1895, 12, 28), Duration.ofSeconds(48));
+        Film film = new Film();
+        film.setName("Прибытие поезда на вокзал Ла-Сьота́");
+        film.setDescription("Первый фильм в истории человечества");
+        film.setReleaseDate(LocalDate.of(1895, 12, 28));
+        film.setDuration(Duration.ofSeconds(48));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void theLastDisallowedDayShouldFail() {
-        Film film = new Film("SCP-1337", "Засекреченные материалы съемок земли инопланетными цивилизациями",
-                LocalDate.of(1895, 12, 27), Duration.ofSeconds(666));
+        Film film = new Film();
+        film.setName("SCP-1337");
+        film.setDescription("Засекреченные материалы съемок земли инопланетными цивилизациями");
+        film.setReleaseDate(LocalDate.of(1895, 12, 27));
+        film.setDuration(Duration.ofSeconds(666));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
     }

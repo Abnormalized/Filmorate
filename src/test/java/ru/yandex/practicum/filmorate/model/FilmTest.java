@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Random;
 
 class FilmTest {
 
@@ -19,7 +16,12 @@ class FilmTest {
     void addingToMapWhenCreated() {
         int creatingTimes = 13;
         for (int i = 0; i < creatingTimes; i++) {
-            Film.create(new Film("Name", "Description", LocalDate.of(1999, 2, 1), Duration.ofSeconds(100)));
+            Film film = new Film();
+            film.setName("Name");
+            film.setDescription("Description");
+            film.setReleaseDate(LocalDate.of(1999, 2, 26));
+            film.setDuration(Duration.ofSeconds(10));
+            Film.create(film);
         }
 
         Assertions.assertEquals(creatingTimes, Film.findAll().size());
@@ -30,8 +32,12 @@ class FilmTest {
         int creatingTimes = 13;
         Film lastAddedFilm = null;
         for (int i = 0; i < creatingTimes; i++) {
-            lastAddedFilm = Film.create(new Film("Name", "Description",
-                    LocalDate.of(1999, 2, 1), Duration.ofSeconds(new Random().nextInt(1000))));
+            Film film = new Film();
+            film.setName("Name");
+            film.setDescription("Description");
+            film.setReleaseDate(LocalDate.of(1999, 2, 26));
+            film.setDuration(Duration.ofSeconds(10));
+            lastAddedFilm = Film.create(film);
         }
 
         Assertions.assertEquals(creatingTimes, lastAddedFilm.getId());

@@ -42,7 +42,11 @@ class FilmControllerTest {
 
     @Test
     void postMappingRCode() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
+        Film film = new Film();
+        film.setName("Name");
+        film.setDescription("Description");
+        film.setReleaseDate(LocalDate.of(1999, 2, 26));
+        film.setDuration(Duration.ofSeconds(10));
         Film newFilm = Film.create(film);
         String filmString = gson.toJson(newFilm);
 
@@ -54,7 +58,11 @@ class FilmControllerTest {
 
     @Test
     void postMappingRCodeWhenInvalidBody() throws Exception {
-        Film film = new Film("", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
+        Film film = new Film();
+        film.setName("");
+        film.setDescription("Description");
+        film.setReleaseDate(LocalDate.of(1999, 2, 26));
+        film.setDuration(Duration.ofSeconds(10));
         Film newFilm = Film.create(film);
         String filmString = gson.toJson(newFilm);
 
@@ -74,7 +82,11 @@ class FilmControllerTest {
 
     @Test
     void putMappingRCode() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
+        Film film = new Film();
+        film.setName("Name");
+        film.setDescription("Description");
+        film.setReleaseDate(LocalDate.of(1999, 2, 26));
+        film.setDuration(Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
@@ -86,7 +98,11 @@ class FilmControllerTest {
 
     @Test
     void putMappingRCodeWhenInvalidBody() throws Exception {
-        Film film = new Film("", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
+        Film film = new Film();
+        film.setName("");
+        film.setDescription("Description");
+        film.setReleaseDate(LocalDate.of(1999, 2, 26));
+        film.setDuration(Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
@@ -98,7 +114,11 @@ class FilmControllerTest {
 
     @Test
     void putMappingRCodeWhenInvalidID() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(1999, 2, 26), Duration.ofSeconds(10));
+        Film film = new Film();
+        film.setName("Name");
+        film.setDescription("Description");
+        film.setReleaseDate(LocalDate.of(1999, 2, 26));
+        film.setDuration(Duration.ofSeconds(10));
         Film filmInfoToUpdate = Film.create(film);
         filmInfoToUpdate.setId(404L);
         String filmRequestString = gson.toJson(filmInfoToUpdate);

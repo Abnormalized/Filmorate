@@ -11,9 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -40,7 +42,11 @@ class UserControllerTest {
 
     @Test
     void postMappingRCode() throws Exception {
-        User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
+        User user = new User();
+        user.setEmail("email@mail.mail");
+        user.setLogin("MyLogin");
+        user.setName("MyName");
+        user.setBirthday(LocalDate.of(1999, 2, 26));
         User newUser = User.create(user);
         String userString = gson.toJson(newUser);
 
@@ -52,7 +58,11 @@ class UserControllerTest {
 
     @Test
     void postMappingRCodeWhenInvalidBody() throws Exception {
-        User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(2229, 2, 26));
+        User user = new User();
+        user.setEmail("email@mail.mail");
+        user.setLogin("MyLogin");
+        user.setName("MyName");
+        user.setBirthday(LocalDate.of(2229, 2, 26));
         User newUser = User.create(user);
         String userString = gson.toJson(newUser);
 
@@ -72,7 +82,11 @@ class UserControllerTest {
 
     @Test
     void putMappingRCode() throws Exception {
-        User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
+        User user = new User();
+        user.setEmail("email@mail.mail");
+        user.setLogin("MyLogin");
+        user.setName("MyName");
+        user.setBirthday(LocalDate.of(1999, 2, 26));
         User userInfoToUpdate = User.create(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
@@ -84,7 +98,11 @@ class UserControllerTest {
 
     @Test
     void putMappingRCodeWhenInvalidBody() throws Exception {
-        User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(2222, 2, 26));
+        User user = new User();
+        user.setEmail("email@mail.mail");
+        user.setLogin("MyLogin");
+        user.setName("MyName");
+        user.setBirthday(LocalDate.of(2222, 2, 26));
         User userInfoToUpdate = User.create(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
@@ -96,7 +114,11 @@ class UserControllerTest {
 
     @Test
     void putMappingRCodeWhenInvalidID() throws Exception {
-        User user = new User("email@mail.mail", "MyLogin", "MyName", LocalDate.of(1999, 2, 26));
+            User user = new User();
+            user.setEmail("email@mail.mail");
+            user.setLogin("MyLogin");
+            user.setName("MyName");
+            user.setBirthday(LocalDate.of(1999, 2, 26));
         User userInfoToUpdate = User.create(user);
         userInfoToUpdate.setId(404L);
         String userRequestString = gson.toJson(userInfoToUpdate);
