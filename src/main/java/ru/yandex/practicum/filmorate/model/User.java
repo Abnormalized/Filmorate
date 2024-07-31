@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
+import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,22 +12,22 @@ import ru.yandex.practicum.filmorate.validator.NotContains;
 import java.time.LocalDate;
 import java.util.*;
 
-@EqualsAndHashCode(of = {"id", "login", "email"})
 @Data
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     public static final Map<Long, User> users = new HashMap<>();
 
-    private long id;
+    long id;
     @Email
     @NotEmpty
-    private String email;
+    String email;
     @NotBlank
     @NotContains(value = " !@#$%^&*()_+|<,.>:;'[]{}-=")
-    private String login;
-    private String name;
+    String login;
+    String name;
     @Past
-    private LocalDate birthday;
+    LocalDate birthday;
 
     public static Collection<User> findAll() {
         return users.values();

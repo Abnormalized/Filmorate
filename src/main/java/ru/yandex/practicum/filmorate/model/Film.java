@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
+import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.time.DurationMin;
 import org.springframework.http.HttpStatus;
@@ -14,22 +15,22 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 
-@EqualsAndHashCode(of = {"id", "name"})
 @Data
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     public static final Map<Long, Film> films = new HashMap<>();
 
-    private long id;
+    long id;
     @NotBlank
-    private String name;
+    String name;
     @Size(max = 200)
-    private String description;
+    String description;
     @NotBeforeDate(value = "1895-12-28", message = "Дата не может быть раньше дня создания кинемотографии")
-    private LocalDate releaseDate;
+    LocalDate releaseDate;
     @NotNull
     @DurationMin
-    private Duration duration;
+    Duration duration;
 
     public long getDuration() {
         return duration.toSeconds();
