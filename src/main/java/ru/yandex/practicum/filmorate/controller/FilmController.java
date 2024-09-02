@@ -52,15 +52,17 @@ public class FilmController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("{id}/like/{userId}")
-    public void likeFilm(@PathVariable long id, @PathVariable long userId) {
-        filmService.addLike(userId, id);
+    @PutMapping("{liked-film-id}/like/{user-id}")
+    public void likeFilm(@PathVariable(value = "liked-film-id") long likedFilmId,
+                         @PathVariable(value = "user-id") long userId) {
+        filmService.addLike(userId, likedFilmId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("{id}/like/{userId}")
-    public void removeLikeFromFilm(@PathVariable long id, @PathVariable long userId) {
-        filmService.removeLike(userId, id);
+    @DeleteMapping("{disliked-film-id}/like/{user-id}")
+    public void removeLikeFromFilm(@PathVariable(value = "disliked-film-id") long dislikedFilmId,
+                                   @PathVariable(value = "user-id") long userId) {
+        filmService.removeLike(userId, dislikedFilmId);
     }
 
     @ExceptionHandler

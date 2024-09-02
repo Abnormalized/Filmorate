@@ -59,14 +59,14 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("{id}/friends/{friendId}")
-    public void addToFriendsList(@PathVariable long id, @PathVariable long friendId) {
+    @PutMapping("{id}/friends/{friend-id}")
+    public void addToFriendsList(@PathVariable long id, @PathVariable(value = "friend-id") long friendId) {
         userService.addUserToFriend(id, friendId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("{id}/friends/{friendId}")
-    public void removeFromFriendList(@PathVariable long id, @PathVariable long friendId) {
+    @DeleteMapping("{id}/friends/{friend-id}")
+    public void removeFromFriendList(@PathVariable long id, @PathVariable(value = "friend-id") long friendId) {
         userService.deleteUserFromFriend(id, friendId);
     }
 
