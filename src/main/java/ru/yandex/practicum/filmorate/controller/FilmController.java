@@ -9,28 +9,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage filmStorage;
+
     private final FilmService filmService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        return filmService.findAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
     public Film getFilmById(@PathVariable long id) {
-        return filmStorage.films.get(id);
+        return filmService.getFilmById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -42,13 +41,13 @@ public class FilmController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        return filmStorage.create(film);
+                return filmService.create(film);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping
     public Film update(@Valid @RequestBody Film filmNewInfo) {
-        return filmStorage.update(filmNewInfo);
+        return filmService.update(filmNewInfo);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -80,6 +79,7 @@ public class FilmController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_EXTENDED)
     public ErrorResponse exceptionHandle(RuntimeException e) {
+        System.out.println(e.getLocalizedMessage());
         return new ErrorResponse("error", "Ошибка сервера.");
     }
 }

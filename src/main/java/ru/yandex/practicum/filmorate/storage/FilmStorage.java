@@ -3,16 +3,24 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public interface FilmStorage {
-    Map<Long, Film> films = new HashMap<>();
+
+    Film getById(long id);
 
     Film create(@RequestBody Film film);
-
-    long newId();
 
     Collection<Film> findAll();
 
     Film update(@RequestBody Film filmNewInfo);
+
+    List<Film> getPopular(int count);
+
+    void addLike(long userId, long filmId);
+
+    void removeLike(long userId, long filmId);
+
+    boolean containsLike(long userId, long filmId);
 }

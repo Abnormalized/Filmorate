@@ -1,17 +1,24 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
+
+    Map<Long, Film> films = new HashMap<>();
+
+    @Override
+    public Film getById(long id) {
+        return films.get(id);
+    }
 
     public Film create(@RequestBody Film film) {
         log.debug("Запрос на создание фильма");
@@ -50,5 +57,25 @@ public class InMemoryFilmStorage implements FilmStorage {
                 Duration.ofSeconds(film.getDuration())));
         log.info("Обновлены данные о фильме ID:{}, Name:{}", film.getId(), film.getName());
         return film;
+    }
+
+    @Override
+    public List<Film> getPopular(int count) {
+        return null;
+    }
+
+    @Override
+    public void addLike(long userId, long filmId) {
+
+    }
+
+    @Override
+    public void removeLike(long userId, long filmId) {
+
+    }
+
+    @Override
+    public boolean containsLike(long userId, long filmId) {
+        return false;
     }
 }

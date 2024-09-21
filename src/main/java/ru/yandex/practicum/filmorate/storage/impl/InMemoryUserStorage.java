@@ -1,15 +1,22 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
+
+    Map<Long, User> users = new HashMap<>();
+
+    @Override
+    public User getById(long id) {
+        return users.get(id);
+    }
 
     public User create(User user) {
         log.debug("Запрос на создание пользователя");
@@ -56,5 +63,45 @@ public class InMemoryUserStorage implements UserStorage {
         }
         log.info("Обновлены данные о пользователе ID:{}, Name:{}", user.getId(), user.getName());
         return user;
+    }
+
+    @Override
+    public Set<Long> getAllFriends(User user) {
+        return Set.of();
+    }
+
+    @Override
+    public Set<Long> getAcceptedFriends(long userId) {
+        return Set.of();
+    }
+
+    @Override
+    public Set<Long> getAskedFriends(long userId) {
+        return Set.of();
+    }
+
+    @Override
+    public Set<Long> getAskedUsers(long userId) {
+        return Set.of();
+    }
+
+    @Override
+    public boolean addFriend(User user, User friend) {
+        return false;
+    }
+
+    @Override
+    public boolean acceptFriend(User user, User friend) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteFriend(User user, User friend) {
+        return false;
+    }
+
+    @Override
+    public Set<Long> getLikedFilms(User user) {
+        return Set.of();
     }
 }
