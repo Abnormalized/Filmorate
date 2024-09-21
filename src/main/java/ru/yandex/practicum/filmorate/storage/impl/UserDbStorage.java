@@ -50,7 +50,7 @@ public class UserDbStorage implements UserStorage {
                 new UserMapper(), user.getLogin(), user.getEmail());
     }
 
-    @Override       
+    @Override
     public Collection<User> findAll() {
         return jdbcTemplate.query("SELECT * FROM users", new UserMapper());
     }
