@@ -8,36 +8,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-    private final UserStorage userStorage;
+
     private final UserService userService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public Collection<User> findAll() {
-        return userStorage.findAll();
+        return userService.findAll();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
     public User getUserById(@PathVariable long id) {
-        return userStorage.users.get(id);
+        return userService.getUserById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}/friends")
-    public Set<User> getFriendList(@PathVariable long id) {
-        return userStorage.users.get(id).getUserFriends().stream().map(this::getUserById).collect(Collectors.toSet());
+    public List<User> getFriendList(@PathVariable long id) {
+        return userService.getFriendList(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -49,13 +47,13 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        return userStorage.create(user);
+        return userService.create(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping
     public User update(@Valid @RequestBody User userNewInfo) {
-        return userStorage.update(userNewInfo);
+        return userService.update(userNewInfo);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -83,8 +81,15 @@ public class UserController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notFoundHandle(NoSuchElementException e) {
+        return new ErrorResponse("error", "Элемент не найден.");
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_EXTENDED)
     public ErrorResponse exceptionHandle(RuntimeException e) {
+        System.out.println(e.getLocalizedMessage());
         return new ErrorResponse("error", "Ошибка сервера.");
     }
 }

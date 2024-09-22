@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Slf4j
@@ -26,9 +26,8 @@ public class Film {
     @NotNull
     @DurationMin
     Duration duration;
-    long countOfLikes = 0;
-    Rating rating;
-    Set<Genre> genres;
+    Rating mpa;
+    List<Genre> genres;
 
     public long getDuration() {
         return duration.toSeconds();

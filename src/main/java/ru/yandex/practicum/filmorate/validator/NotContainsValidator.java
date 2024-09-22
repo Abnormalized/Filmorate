@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class NotContainsValidator implements ConstraintValidator<NotContains, String> {
 
-    String notAllowedCharsString;
+    private String notAllowedCharsString;
 
     @Override
     public void initialize(NotContains constraintAnnotation) {
