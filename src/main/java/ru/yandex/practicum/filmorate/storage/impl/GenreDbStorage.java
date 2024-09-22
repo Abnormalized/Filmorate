@@ -14,7 +14,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage {
 
-    public final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Collection<Genre> getAll() {

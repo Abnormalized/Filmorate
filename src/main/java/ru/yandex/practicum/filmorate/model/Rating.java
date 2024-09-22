@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Rating {
-    private Long id;
-    private String name;
+    Long id;
+    String name;
 }

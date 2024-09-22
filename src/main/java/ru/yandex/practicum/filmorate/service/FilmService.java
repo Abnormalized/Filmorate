@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -11,12 +13,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmService {
 
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
-    private final GenreService genreService;
-    private final RatingService ratingService;
+    final FilmStorage filmStorage;
+    final GenreService genreService;
+    final RatingService ratingService;
 
     public Collection<Film> findAll() {
         return filmStorage.findAll();

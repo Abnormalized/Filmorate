@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class NotBeforeValidator implements ConstraintValidator<NotBeforeDate, LocalDate> {
 
-    String minDate;
+    private String minDate;
 
     @Override
     public void initialize(NotBeforeDate constraintAnnotation) {

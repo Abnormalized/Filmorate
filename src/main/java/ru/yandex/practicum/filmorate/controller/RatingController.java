@@ -16,7 +16,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class RatingController {
 
-    public final RatingService ratingService;
+    private final RatingService ratingService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping

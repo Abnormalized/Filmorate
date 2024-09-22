@@ -15,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RatingDbStorage implements RatingStorage {
 
-    public final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Collection<Rating> getAll() {

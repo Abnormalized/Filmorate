@@ -16,7 +16,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class GenreController {
 
-    public final GenreService genreService;
+    private final GenreService genreService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping

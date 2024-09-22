@@ -15,7 +15,7 @@ import java.util.*;
 @Primary
 public class UserDbStorage implements UserStorage {
 
-    public final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public User getById(long id) {

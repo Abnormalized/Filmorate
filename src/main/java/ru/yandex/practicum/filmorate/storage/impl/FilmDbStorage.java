@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -13,11 +15,12 @@ import java.util.*;
 @Component
 @AllArgsConstructor
 @Primary
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
 
-    public final JdbcTemplate jdbcTemplate;
-    public final GenreStorage genreStorage;
-    public final RatingStorage ratingStorage;
+    final JdbcTemplate jdbcTemplate;
+    final GenreStorage genreStorage;
+    final RatingStorage ratingStorage;
 
     @Override
     public Film getById(long id) {
