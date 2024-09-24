@@ -1,3 +1,11 @@
+DROP TABLE IF EXISTS rating,
+                     films,
+                     genres,
+                     films_genre,
+                     users,
+                     user_liked_films,
+                     friend_users;
+
 CREATE TABLE IF NOT EXISTS rating (
 	rating_id int PRIMARY KEY auto_increment,
 	rating_name varchar

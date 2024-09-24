@@ -1,11 +1,14 @@
-INSERT INTO rating (rating_name) values ('G')
-INSERT INTO rating (rating_name) values ('PG')
-INSERT INTO rating (rating_name) values ('PG-13')
-INSERT INTO rating (rating_name) values ('R')
-INSERT INTO rating (rating_name) values ('NC-17')
-INSERT INTO genres (name) values ('Комедия')
-INSERT INTO genres (name) values ('Драма')
-INSERT INTO genres (name) values ('Мультфильм')
-INSERT INTO genres (name) values ('Триллер')
-INSERT INTO genres (name) values ('Документальный')
-INSERT INTO genres (name) values ('Боевик')
+INSERT INTO rating (rating_name)
+VALUES ('G'),
+       ('PG'),
+       ('PG-13'),
+       ('R'),
+       ('NC-17');
+
+INSERT INTO genres (name)
+VALUES ('Комедия'),
+       ('Драма'),
+       ('Мультфильм'),
+       ('Триллер'),
+       ('Документальный'),
+       ('Боевик');
