@@ -20,13 +20,12 @@ public class FilmDbStorage implements FilmStorage {
 
     final JdbcTemplate jdbcTemplate;
     final GenreStorage genreStorage;
-    final RatingStorage ratingStorage;
+    final DirectorStorage directorStorage;
 
     @Override
     public Film getById(long id) {
-        Film film = jdbcTemplate.queryForObject("SELECT * FROM films WHERE film_id = ?",
+        return jdbcTemplate.queryForObject("SELECT * FROM films WHERE film_id = ?",
                 new FilmMapper(), id);
-        return ratingStorage.setFilmRating(genreStorage.setFilmGenres(film));
     }
 
     @Override
@@ -54,6 +53,7 @@ public class FilmDbStorage implements FilmStorage {
                 new FilmMapper(), film.getName(), film.getReleaseDate());
 
         genreStorage.saveGenresInfo(filmFromDb.getId(), film.getGenres());
+        directorStorage.saveDirectorsInfo(filmFromDb.getId(), film.getDirectors());
 
         return getById(filmFromDb.getId());
     }
@@ -87,7 +87,20 @@ public class FilmDbStorage implements FilmStorage {
             throw new NoSuchElementException();
         }
 
-        return filmNewInfo;
+        String returnSqlQuery = """
+        SELECT *
+        FROM films
+        WHERE name = ? AND release_date = ?
+        ORDER BY film_id DESC
+        LIMIT(1)""";
+
+        Film filmFromDb = jdbcTemplate.queryForObject(returnSqlQuery,
+                new FilmMapper(), filmNewInfo.getName(), filmNewInfo.getReleaseDate());
+
+        genreStorage.saveGenresInfo(filmFromDb.getId(), filmNewInfo.getGenres());
+        directorStorage.saveDirectorsInfo(filmFromDb.getId(), filmNewInfo.getDirectors());
+
+        return getById(filmFromDb.getId());
     }
 
     @Override
@@ -125,5 +138,41 @@ public class FilmDbStorage implements FilmStorage {
     public boolean containsLike(long userId, long filmId) {
         return !jdbcTemplate.queryForList("SELECT * FROM user_liked_films WHERE user_id = ? AND film_id = ?",
                 userId, filmId).isEmpty();
+    }
+
+    @Override
+    public Collection<Film> getDirectorFilms(long directorId, String sortType) {
+        String sqlQueryWithSortByLikes = """
+                SELECT  f.FILM_ID,
+                        f.name,
+                        f.DESCRIPTION,
+                        f.RELEASE_DATE,
+                        f.DURATION,
+                        f.rating_id,
+                        r.rating_name,
+                        COUNT(user_id) AS likes
+                FROM director_films df
+                JOIN films f ON f.film_id = df.film_id
+                JOIN user_liked_films ulf ON f.film_id = ulf.film_id
+                JOIN rating r ON f.rating_id = r.rating_id
+                WHERE director_id = ?
+                GROUP BY f.FILM_ID
+                ORDER BY likes DESC
+                """;
+
+        String sqlQueryWithSortByYears = """
+                SELECT *
+                FROM director_films df
+                JOIN films f ON df.film_id = f.film_id
+                WHERE director_id = ?
+                GROUP BY f.film_id
+                ORDER BY f.release_date ASC
+                """;
+
+        if (Objects.equals(sortType, "likes")) {
+            return jdbcTemplate.query(sqlQueryWithSortByLikes, new FilmMapper(), directorId);
+        } else {
+            return jdbcTemplate.query(sqlQueryWithSortByYears, new FilmMapper(), directorId);
+        }
     }
 }

@@ -45,6 +45,13 @@ public class FilmController {
         return filmService.getMostLikedFilms(count);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/director/{director-id}")
+    public Collection<Film> getDirectorFilms(@PathVariable(value = "director-id") long directorId,
+                                             @PathParam("sortBy") String sortBy) {
+        return filmService.getDirectorFilms(directorId, sortBy);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {

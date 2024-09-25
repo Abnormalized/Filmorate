@@ -18,23 +18,31 @@ public class FilmService {
     final FilmStorage filmStorage;
     final GenreService genreService;
     final RatingService ratingService;
+    final DirectorService directorService;
 
     public Collection<Film> findAll() {
         return filmStorage.findAll();
     }
 
     public Film getFilmById(long id) {
-        return filmStorage.getById(id);
+        Film film = filmStorage.getById(id);
+        setFilmProperties(film);
+        return film;
     }
 
     public Film create(Film film) {
         ratingService.validateMpaId(film.getMpa().getId());
         genreService.validateGenreId(film.getGenres());
-        return filmStorage.create(film);
+        directorService.validateDirectorsId(film.getDirectors());
+        Film createdFilm = filmStorage.create(film);
+        setFilmProperties(createdFilm);
+        return createdFilm;
     }
 
     public Film update(Film filmNewInfo) {
-        return filmStorage.update(filmNewInfo);
+        Film film = filmStorage.update(filmNewInfo);
+        setFilmProperties(film);
+        return film;
     }
 
     public void addLike(long userId, long filmId) {
@@ -54,5 +62,19 @@ public class FilmService {
             count = 10;
         }
         return filmStorage.getPopular(count);
+    }
+
+    public Collection<Film> getDirectorFilms(long directorId, String sortType) {
+        Collection<Film> films = filmStorage.getDirectorFilms(directorId, sortType);
+        for (Film film : films) {
+            setFilmProperties(film);
+        }
+        return films;
+    }
+
+    public void setFilmProperties(Film film) {
+        ratingService.setFilmRating(film);
+        genreService.setFilmGenres(film);
+        directorService.setFilmDirectors(film);
     }
 }

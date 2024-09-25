@@ -8,8 +8,7 @@ import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.RatingStorage;
 import ru.yandex.practicum.filmorate.storage.mapper.RatingMapper;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -35,13 +34,13 @@ public class RatingDbStorage implements RatingStorage {
 
     @Override
     public int getCountOfMpa() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(rating_id) FROM rating", Integer.class);
+        Integer num = jdbcTemplate.queryForObject("SELECT COUNT(rating_id) FROM rating", Integer.class);
+        return Objects.requireNonNullElse(num, 0);
     }
 
     @Override
-    public Film setFilmRating(Film film) {
+    public void setFilmRating(Film film) {
         film.setMpa(jdbcTemplate.queryForObject("SELECT * FROM rating WHERE rating_id = ? LIMIT (1)",
                 new RatingMapper(), film.getMpa().getId()));
-        return film;
     }
 }

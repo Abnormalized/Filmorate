@@ -13,7 +13,7 @@ public interface GenreStorage {
 
     int getCountOfGenres();
 
-    Film setFilmGenres(Film film);
+    void setFilmGenres(Film film);
 
     void saveGenresInfo(long filmId, List<Genre> genres);
 

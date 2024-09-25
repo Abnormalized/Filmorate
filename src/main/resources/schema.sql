@@ -4,7 +4,9 @@ DROP TABLE IF EXISTS rating,
                      films_genre,
                      users,
                      user_liked_films,
-                     friend_users;
+                     friend_users,
+                     directors,
+                     director_films;
 
 CREATE TABLE IF NOT EXISTS rating (
 	rating_id int PRIMARY KEY auto_increment,
@@ -43,4 +45,14 @@ CREATE TABLE IF NOT EXISTS friend_users (
 	requester_id bigint REFERENCES users (user_id),
 	responser_id bigint REFERENCES users (user_id),
 	accepted boolean
+);
+CREATE TABLE IF NOT EXISTS directors (
+	director_id bigint PRIMARY KEY auto_increment,
+	name varchar
+);
+CREATE TABLE IF NOT EXISTS director_films (
+    director_id bigint,
+    film_id bigint,
+	FOREIGN KEY (director_id) REFERENCES directors (director_id),
+	FOREIGN KEY (film_id) REFERENCES films (film_id)
 );

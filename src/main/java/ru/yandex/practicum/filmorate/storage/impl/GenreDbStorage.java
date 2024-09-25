@@ -38,7 +38,7 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Film setFilmGenres(Film film) {
+    public void setFilmGenres(Film film) {
         final String sqlQuery = """
                 SELECT fg.genre_id,
                        g.name AS genre_name
@@ -46,14 +46,14 @@ public class GenreDbStorage implements GenreStorage {
                 JOIN genres g ON g.genre_id = fg.genre_id
                 WHERE film_id = ?
             """;
-            film.setGenres(new ArrayList<>(jdbcTemplate.query(sqlQuery,
-                new GenreMapper(), film.getId())));
-        return film;
+        film.setGenres(new ArrayList<>(jdbcTemplate.query(sqlQuery,
+            new GenreMapper(), film.getId())));
     }
 
     @Override
     public void saveGenresInfo(long filmId, List<Genre> genres) {
         if (genres != null) {
+            resetGenresInfoInFilm(filmId);
             String genreSqlQuery = """
                         INSERT INTO films_genre(film_id, genre_id)
                         VALUES (?, ?)
@@ -64,6 +64,10 @@ public class GenreDbStorage implements GenreStorage {
                 }
             }
         }
+    }
+
+    private void resetGenresInfoInFilm(long filmId) {
+        jdbcTemplate.update("DELETE FROM films_genre WHERE film_id = ?", filmId);
     }
 
     @Override
