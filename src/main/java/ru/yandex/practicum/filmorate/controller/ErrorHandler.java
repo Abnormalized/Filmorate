@@ -30,16 +30,8 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundHandle(NullPointerException e) {
-        log.error("error", e.getMessage());
-        return new ErrorResponse("error", "Не найдено.");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundHandle(NoSuchElementException e) {
         log.error("error", e.getMessage());
-        return new ErrorResponse("error", "Элемент не найден.");
+        return new ErrorResponse("error", "Ничего не найдено.");
     }
-
 }

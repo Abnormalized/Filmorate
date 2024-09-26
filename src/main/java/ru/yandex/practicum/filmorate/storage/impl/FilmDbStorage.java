@@ -84,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
                 filmNewInfo.getId());
 
         if (matches == 0) {
-            throw new NullPointerException();
+            throw new NoSuchElementException();
         }
 
         return filmNewInfo;

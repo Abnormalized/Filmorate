@@ -23,7 +23,7 @@ public class UserDbStorage implements UserStorage {
                         "SELECT COUNT(user_id) AS sum FROM users WHERE user_id = ?",
                         (rs, rowNum) -> rs.getInt("sum"), id);
         if (res == null || res == 0) {
-            throw new NullPointerException();
+            throw new NoSuchElementException();
         }
         User user = jdbcTemplate.queryForObject("SELECT * FROM users WHERE user_id = ?", new UserMapper(), id);
 

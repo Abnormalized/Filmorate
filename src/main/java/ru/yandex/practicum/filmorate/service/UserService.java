@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class UserService {
         User user1 = userStorage.getById(userId1);
         User user2 = userStorage.getById(userId2);
         if (userStorage.getById(userId2) == null) {
-            throw new NullPointerException();
+            throw new NoSuchElementException();
         }
         if (!userStorage.getAllFriends(getUserById(userId1)).contains(userId2)) {
             return;

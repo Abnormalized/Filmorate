@@ -49,7 +49,7 @@ public class InMemoryUserStorage implements UserStorage {
         log.debug("Запрос на обновление существующего пользователя");
         if (!users.containsKey(userNewInfo.getId())) {
             log.warn("Запрашиваемый пользователь с ID: {} не найден", userNewInfo.getId());
-            throw new NullPointerException();
+            throw new NoSuchElementException();
         }
         long id = userNewInfo.getId();
         User user = users.get(id);
