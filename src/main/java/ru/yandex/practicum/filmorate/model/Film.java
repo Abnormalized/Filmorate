@@ -28,6 +28,7 @@ public class Film {
     Duration duration;
     Rating mpa;
     List<Genre> genres;
+    List<Director> directors;
 
     public long getDuration() {
         return duration.toSeconds();

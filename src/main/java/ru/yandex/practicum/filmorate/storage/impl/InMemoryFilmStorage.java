@@ -78,4 +78,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public boolean containsLike(long userId, long filmId) {
         return false;
     }
+
+    @Override
+    public Collection<Film> getDirectorFilms(long directorId, String sortType) {
+        return List.of();
+    }
 }

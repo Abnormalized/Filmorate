@@ -14,5 +14,5 @@ public interface RatingStorage {
 
     int getCountOfMpa();
 
-    Film setFilmRating(Film film);
+    void setFilmRating(Film film);
 }

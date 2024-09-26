@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.RatingStorage;
 
@@ -26,5 +27,9 @@ public class RatingService {
         if (id > ratingStorage.getCountOfMpa()) {
             throw new ValidationException();
         }
+    }
+
+    void setFilmRating(Film film) {
+        ratingStorage.setFilmRating(film);
     }
 }
