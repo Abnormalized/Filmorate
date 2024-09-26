@@ -40,4 +40,5 @@ public class ErrorHandler {
         log.error("error", e.getMessage());
         return new ErrorResponse("error", "Элемент не найден.");
     }
+
 }
