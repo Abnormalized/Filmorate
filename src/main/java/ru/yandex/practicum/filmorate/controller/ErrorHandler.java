@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validationHandle(jakarta.validation.ValidationException e) {
+    public ErrorResponse validationHandle(ValidationException e) {
         log.error("error", e.getMessage());
         return new ErrorResponse("error", "Указаны некорректные данные.");
     }
