@@ -48,11 +48,10 @@ CREATE TABLE IF NOT EXISTS friend_users (
 );
 CREATE TABLE IF NOT EXISTS directors (
 	director_id bigint PRIMARY KEY auto_increment,
-	name varchar
+	name varchar(50)
 );
 CREATE TABLE IF NOT EXISTS director_films (
-    director_id bigint,
-    film_id bigint,
-	FOREIGN KEY (director_id) REFERENCES directors (director_id),
-	FOREIGN KEY (film_id) REFERENCES films (film_id)
+    director_id bigint REFERENCES directors (director_id),
+    film_id bigint REFERENCES films (film_id),
+    PRIMARY KEY (director_id, film_id)
 );

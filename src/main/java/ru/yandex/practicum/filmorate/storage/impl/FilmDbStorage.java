@@ -171,8 +171,10 @@ public class FilmDbStorage implements FilmStorage {
 
         if (Objects.equals(sortType, "likes")) {
             return jdbcTemplate.query(sqlQueryWithSortByLikes, new FilmMapper(), directorId);
-        } else {
+        } else if (Objects.equals(sortType, "year")) {
             return jdbcTemplate.query(sqlQueryWithSortByYears, new FilmMapper(), directorId);
+        } else {
+            throw new NoSuchElementException("Отсортировать можно только по годам (year) и лайкам (likes)");
         }
     }
 }
