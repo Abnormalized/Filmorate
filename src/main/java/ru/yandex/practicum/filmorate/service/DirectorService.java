@@ -7,8 +7,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class DirectorService {
     }
 
     public Director getDirectorById(long id) {
-        return directorStorage.getById(id).orElseThrow(NullPointerException::new);
+        return directorStorage.getById(id).orElseThrow(NoSuchElementException::new);
     }
 
     public Director create(Director director) {
@@ -45,7 +44,7 @@ public class DirectorService {
             int maxId = directorStorage.getCountOfDirectors();
             for (Director director : directors) {
                 if (director.getId() > maxId) {
-                    throw new NullPointerException();
+                    throw new NoSuchElementException();
                 }
             }
         }

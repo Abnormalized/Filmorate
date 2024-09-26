@@ -47,22 +47,4 @@ public class DirectorController {
     public void delete(@PathVariable long id) {
         directorService.delete(id);
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validationHandle(ValidationException e) {
-        return new ErrorResponse("error", "Указаны некорректные данные.");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundHandle(NullPointerException e) {
-        return new ErrorResponse("error", "Не найдено.");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_EXTENDED)
-    public ErrorResponse exceptionHandle(RuntimeException e) {
-        return new ErrorResponse("error", "Ошибка сервера.");
-    }
 }
