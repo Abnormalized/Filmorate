@@ -47,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.debug("Запрос на обновление данных о фильме");
         if (!films.containsKey(filmNewInfo.getId())) {
             log.warn("Запрашиваемый фильм с ID: {} не найден", filmNewInfo.getId());
-            throw new NullPointerException();
+            throw new NoSuchElementException();
         }
         Film film = films.get(filmNewInfo.getId());
         film.setName(Objects.requireNonNullElse(filmNewInfo.getName(), film.getName()));

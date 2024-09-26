@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class GenreService {
     }
 
     public Genre getById(int id) {
-        return genreStorage.getById(id).orElseThrow(NullPointerException::new);
+        return genreStorage.getById(id).orElseThrow(NoSuchElementException::new);
     }
 
     void validateGenreId(List<Genre> genres) {
