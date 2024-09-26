@@ -63,23 +63,4 @@ public class FilmController {
                                    @PathVariable(value = "user-id") long userId) {
         filmService.removeLike(userId, dislikedFilmId);
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validationHandle(ValidationException e) {
-        return new ErrorResponse("error", "Указаны некорректные данные.");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundHandle(NullPointerException e) {
-        return new ErrorResponse("error", "Не найдено.");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_EXTENDED)
-    public ErrorResponse exceptionHandle(RuntimeException e) {
-        System.out.println(e.getLocalizedMessage());
-        return new ErrorResponse("error", "Ошибка сервера.");
-    }
 }
