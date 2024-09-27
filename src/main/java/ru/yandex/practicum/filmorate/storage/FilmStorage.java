@@ -5,10 +5,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
 
-    Film getById(long id);
+    Optional<Film> getById(long id);
 
     Film create(@RequestBody Film film);
 

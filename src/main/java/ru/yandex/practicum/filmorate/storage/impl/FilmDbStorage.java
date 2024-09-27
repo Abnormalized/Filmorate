@@ -3,29 +3,31 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.*;
-import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
-
 import java.util.*;
 
 @Component
 @AllArgsConstructor
-@Primary
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
-
     final JdbcTemplate jdbcTemplate;
     final GenreStorage genreStorage;
     final DirectorStorage directorStorage;
+    final RowMapper<Film> rowMapper;
 
     @Override
-    public Film getById(long id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM films WHERE film_id = ?",
-                new FilmMapper(), id);
+    public Optional<Film> getById(long id) {
+        try {
+            Film film = jdbcTemplate.queryForObject("SELECT * FROM films WHERE film_id = ?", rowMapper, id);
+            return Optional.ofNullable(film);
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -43,24 +45,23 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId());
 
         String returnSqlQuery = """
-        SELECT *
-        FROM films
-        WHERE name = ? AND release_date = ?
-        ORDER BY film_id DESC
-        LIMIT(1)""";
+                SELECT *
+                FROM films
+                WHERE name = ? AND release_date = ?
+                ORDER BY film_id DESC
+                LIMIT(1)""";
 
-        Film filmFromDb = jdbcTemplate.queryForObject(returnSqlQuery,
-                new FilmMapper(), film.getName(), film.getReleaseDate());
-
+        Film filmFromDb = jdbcTemplate.queryForObject(returnSqlQuery, rowMapper, film.getName(), film.getReleaseDate());
         genreStorage.saveGenresInfo(filmFromDb.getId(), film.getGenres());
         directorStorage.saveDirectorsInfo(filmFromDb.getId(), film.getDirectors());
 
-        return getById(filmFromDb.getId());
+        return getById(filmFromDb.getId())
+                .orElseThrow(() -> new NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден"));
     }
 
     @Override
     public Collection<Film> findAll() {
-        return jdbcTemplate.query("SELECT * FROM films", new FilmMapper());
+        return jdbcTemplate.query("SELECT * FROM films", rowMapper);
     }
 
     @Override
@@ -88,19 +89,20 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         String returnSqlQuery = """
-        SELECT *
-        FROM films
-        WHERE name = ? AND release_date = ?
-        ORDER BY film_id DESC
-        LIMIT(1)""";
+                SELECT *
+                FROM films
+                WHERE name = ? AND release_date = ?
+                ORDER BY film_id DESC
+                LIMIT(1)""";
 
-        Film filmFromDb = jdbcTemplate.queryForObject(returnSqlQuery,
-                new FilmMapper(), filmNewInfo.getName(), filmNewInfo.getReleaseDate());
+        Film filmFromDb = jdbcTemplate.queryForObject(returnSqlQuery, rowMapper,
+                filmNewInfo.getName(), filmNewInfo.getReleaseDate());
 
         genreStorage.saveGenresInfo(filmFromDb.getId(), filmNewInfo.getGenres());
         directorStorage.saveDirectorsInfo(filmFromDb.getId(), filmNewInfo.getDirectors());
 
-        return getById(filmFromDb.getId());
+        return getById(filmFromDb.getId())
+                .orElseThrow(() -> new NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден"));
     }
 
     @Override
@@ -121,7 +123,7 @@ public class FilmDbStorage implements FilmStorage {
                 ORDER BY likes DESC
                 LIMIT (?)""";
 
-        return jdbcTemplate.query(query, new FilmMapper(), count);
+        return jdbcTemplate.query(query, rowMapper, count);
     }
 
     @Override
@@ -170,9 +172,9 @@ public class FilmDbStorage implements FilmStorage {
                 """;
 
         if (Objects.equals(sortType, "likes")) {
-            return jdbcTemplate.query(sqlQueryWithSortByLikes, new FilmMapper(), directorId);
+            return jdbcTemplate.query(sqlQueryWithSortByLikes, rowMapper, directorId);
         } else if (Objects.equals(sortType, "year")) {
-            return jdbcTemplate.query(sqlQueryWithSortByYears, new FilmMapper(), directorId);
+            return jdbcTemplate.query(sqlQueryWithSortByYears, rowMapper, directorId);
         } else {
             throw new NoSuchElementException("Отсортировать можно только по годам (year) и лайкам (likes)");
         }
