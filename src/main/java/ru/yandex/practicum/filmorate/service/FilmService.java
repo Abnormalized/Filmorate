@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +26,14 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        Film film = filmStorage.getById(id);
+        Film film = filmStorage.getById(id)
+                .orElseThrow(()-> new NoSuchElementException("Фильм с id " + id + " не найден"));
         setFilmProperties(film);
         return film;
+    }
+
+    public void validateFilmPresenceById(long id) {
+        filmStorage.getById(id);
     }
 
     public Film create(Film film) {
