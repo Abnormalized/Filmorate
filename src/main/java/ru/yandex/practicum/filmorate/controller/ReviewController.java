@@ -22,7 +22,7 @@ public class ReviewController {
     private final ReviewService service;
 
     @GetMapping
-    public Collection<Review> getReviewsByFilmId(@RequestParam(defaultValue = "-1") long id,
+    public Collection<Review> getReviewsByFilmId(@RequestParam(defaultValue = "0") long id,
                                                  @RequestParam(defaultValue = "10") @Positive long count) {
         return service.getReviewsByFilmId(id, count);
     }
