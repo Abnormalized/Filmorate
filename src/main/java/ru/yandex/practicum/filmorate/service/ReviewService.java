@@ -12,12 +12,12 @@ import java.util.NoSuchElementException;
 @Service
 @AllArgsConstructor
 public class ReviewService {
-    ReviewStorage reviewStorage;
-    UserService userService;
-    FilmService filmService;
+    private final ReviewStorage reviewStorage;
+    private final UserService userService;
+    private final FilmService filmService;
 
     public Collection<Review> getReviewsByFilmId(long id, long count) {
-        return id == -1 ? reviewStorage.getAllReviews(count) : reviewStorage.getReviewsByFilmId(id, count);
+        return id == 0 ? reviewStorage.getAllReviews(count) : reviewStorage.getReviewsByFilmId(id, count);
     }
 
     public Review getReviewById(long id) {
