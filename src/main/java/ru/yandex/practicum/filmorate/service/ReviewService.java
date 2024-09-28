@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -17,34 +17,41 @@ public class ReviewService {
     FilmService filmService;
 
     public Collection<Review> getReviewsByFilmId(long id, long count) {
-        return List.of();
+        return id == -1 ? reviewStorage.getAllReviews(count) : reviewStorage.getReviewsByFilmId(id, count);
     }
 
     public Review getReviewById(long id) {
-        return null;
+        return reviewStorage.getReviewById(id)
+                .orElseThrow(() -> new NoSuchElementException("Отзыв с id " + id + " не найден"));
     }
 
     public Review addReview(Review review) {
-        return null;
+        userService.validateUserPresenceById(review.getUserId());
+        filmService.validateFilmPresenceById(review.getFilmId());
+        return reviewStorage.addReview(review);
     }
 
     public Review updateReview(Review review) {
-        return null;
+        userService.validateUserPresenceById(review.getUserId());
+        filmService.validateFilmPresenceById(review.getFilmId());
+        return reviewStorage.updateReview(review);
+    }
+
+    public Review deleteReviewById(long id) {
+        Review review = getReviewById(id);
+        reviewStorage.deleteReviewById(id);
+        return review;
     }
 
     public Review addLike(long reviewId, long userId) {
         return null;
     }
 
-    public Review addDislike(long reviewId, long userId) {
-        return null;
-    }
-
-    public Review deleteReviewById(long id) {
-        return null;
-    }
-
     public Review deleteLike(long reviewId, long userId) {
+        return null;
+    }
+
+    public Review addDislike(long reviewId, long userId) {
         return null;
     }
 
