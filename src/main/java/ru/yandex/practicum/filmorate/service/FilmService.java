@@ -79,4 +79,8 @@ public class FilmService {
         genreService.setFilmGenres(film);
         directorService.setFilmDirectors(film);
     }
+
+    public void deleteFilmById(long id) {
+        filmStorage.deleteFilmById(id);
+    }
 }

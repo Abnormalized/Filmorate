@@ -30,4 +30,8 @@ public interface UserStorage {
     boolean deleteFriend(User user, User friend);
 
     Set<Long> getLikedFilms(User user);
+
+    void deleteUserById(long id);
+
+    boolean checkById(long id);
 }
