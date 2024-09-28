@@ -205,6 +205,7 @@ public class FilmDbStorage implements FilmStorage {
         exists = count > 0;
         return exists;
     }
+
     @Override
     public void deleteFilmById(long id) {
         if (!checkById(id)) {
