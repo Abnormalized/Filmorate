@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,11 +56,8 @@ public class FilmService {
         }
     }
 
-    public List<Film> getMostLikedFilms(int count) {
-        if (count == 0) {
-            count = 10;
-        }
-        return filmStorage.getPopular(count);
+    public Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
+        return filmStorage.getPopularFilm(count, genreId, year);
     }
 
     public Collection<Film> getDirectorFilms(long directorId, String sortType) {

@@ -16,7 +16,7 @@ public interface FilmStorage {
 
     Film update(@RequestBody Film filmNewInfo);
 
-    List<Film> getPopular(int count);
+    Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year);
 
     void addLike(long userId, long filmId);
 

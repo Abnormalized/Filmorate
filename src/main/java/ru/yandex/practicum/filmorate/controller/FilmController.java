@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -41,8 +42,11 @@ public class FilmController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/popular")
-    public Collection<Film> getMostLikedFilms(@PathParam("count") int count) {
-        return filmService.getMostLikedFilms(count);
+    public Collection<Film> getPopularFilm(@RequestParam(name = "count", defaultValue = "10",
+            required = false) Integer count,
+                                           @RequestParam(name = "genreId", required = false) Integer genreId,
+                                           @RequestParam(name = "year", required = false) Integer year) {
+        return filmService.getPopularFilm(count, genreId, year);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -55,7 +59,7 @@ public class FilmController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-                return filmService.create(film);
+        return filmService.create(film);
     }
 
     @ResponseStatus(HttpStatus.OK)
