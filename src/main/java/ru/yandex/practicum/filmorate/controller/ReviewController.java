@@ -47,23 +47,27 @@ public class ReviewController {
         return service.deleteReviewById(id);
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public Review addLike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+    @PutMapping("/{id}/like/{user-id}")
+    public Review addLike(@PathVariable("id") @Positive long reviewId,
+                          @PathVariable("user-id") @Positive long userId) {
         return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.ADD_LIKE);
     }
 
-    @PutMapping("/{id}/dislike/{userId}")
-    public Review addDislike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+    @PutMapping("/{id}/dislike/{user-id}")
+    public Review addDislike(@PathVariable("id") @Positive long reviewId,
+                             @PathVariable("user-id") @Positive long userId) {
         return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.ADD_DISLIKE);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
-    public Review deleteLike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+    @DeleteMapping("/{id}/like/{user-id}")
+    public Review deleteLike(@PathVariable("id") @Positive long reviewId,
+                             @PathVariable("user-id") @Positive long userId) {
         return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.DEL_LIKE);
     }
 
-    @DeleteMapping("/{id}/dislike/{userId}")
-    public Review deleteDislike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+    @DeleteMapping("/{id}/dislike/{user-id}")
+    public Review deleteDislike(@PathVariable("id") @Positive long reviewId,
+                                @PathVariable("user-id") @Positive long userId) {
         return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.DEL_DISLIKE);
     }
 }
