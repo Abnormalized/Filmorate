@@ -1,10 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.time.DurationMin;
 import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
 
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     long id;
