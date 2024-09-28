@@ -10,9 +10,20 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.*;
 import java.util.*;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Component
 @AllArgsConstructor
+@Primary
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
 
