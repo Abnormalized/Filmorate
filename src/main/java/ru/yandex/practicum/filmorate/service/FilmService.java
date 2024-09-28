@@ -27,13 +27,13 @@ public class FilmService {
 
     public Film getFilmById(long id) {
         Film film = filmStorage.getById(id)
-                .orElseThrow(()-> new NoSuchElementException("Фильм с id " + id + " не найден"));
+                .orElseThrow(() -> new NoSuchElementException("Фильм с id " + id + " не найден"));
         setFilmProperties(film);
         return film;
     }
 
     public void validateFilmPresenceById(long id) {
-        filmStorage.getById(id);
+        filmStorage.getById(id).orElseThrow(() -> new NoSuchElementException("Фильм с id " + id + " не найден"));
     }
 
     public Film create(Film film) {

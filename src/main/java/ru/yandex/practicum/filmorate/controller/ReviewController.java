@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +13,7 @@ import lombok.AllArgsConstructor;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
-@Controller
+@RestController
 @Validated
 @AllArgsConstructor
 @RequestMapping("/reviews")
@@ -22,13 +21,13 @@ public class ReviewController {
     private final ReviewService service;
 
     @GetMapping
-    public Collection<Review> getReviewsByFilmId(@RequestParam @Positive long id,
+    public Collection<Review> getReviewsByFilmId(@RequestParam(defaultValue = "-1") long id,
                                                  @RequestParam(defaultValue = "10") @Positive long count) {
         return service.getReviewsByFilmId(id, count);
     }
 
     @GetMapping("/{id}")
-    public Review getReviewById(@PathVariable @Positive long id) {
+    public Review getReviewById(@PathVariable long id) {
         return service.getReviewById(id);
     }
 

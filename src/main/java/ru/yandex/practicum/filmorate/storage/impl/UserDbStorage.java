@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
@@ -12,7 +11,6 @@ import java.util.*;
 
 @Component
 @AllArgsConstructor
-@Primary
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -23,7 +21,7 @@ public class UserDbStorage implements UserStorage {
                         "SELECT COUNT(user_id) AS sum FROM users WHERE user_id = ?",
                         (rs, rowNum) -> rs.getInt("sum"), id);
         if (res == null || res == 0) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Пользователь с id " + id + " не найден");
         }
         User user = jdbcTemplate.queryForObject("SELECT * FROM users WHERE user_id = ?", new UserMapper(), id);
 
