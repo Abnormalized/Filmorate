@@ -22,10 +22,8 @@ import java.util.Optional;
 
 @Component
 @AllArgsConstructor
-@Primary
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmDbStorage implements FilmStorage {
-
     final JdbcTemplate jdbcTemplate;
     final GenreStorage genreStorage;
     final DirectorStorage directorStorage;
@@ -138,6 +136,8 @@ public class FilmDbStorage implements FilmStorage {
         sql += " GROUP BY f.name, f.film_id " +
                 "ORDER BY COUNT(l.film_id) DESC LIMIT ?";
         params.add(count);
+        Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
+
         Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
 
         return films;
