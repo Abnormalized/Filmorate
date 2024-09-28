@@ -19,6 +19,10 @@ public class UserService {
         return userStorage.getById(id);
     }
 
+    public void validateUserPresenceById(long id) {
+        userStorage.getById(id);
+    }
+
     public Collection<User> findAll() {
         return userStorage.findAll();
     }
