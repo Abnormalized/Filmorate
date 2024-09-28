@@ -3,23 +3,22 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.*;
-import java.util.*;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -139,7 +138,7 @@ public class FilmDbStorage implements FilmStorage {
         sql += " GROUP BY f.name, f.film_id " +
                 "ORDER BY COUNT(l.film_id) DESC LIMIT ?";
         params.add(count);
-        Collection<Film> films = jdbcTemplate.query(sql, new FilmMapper(), params.toArray());
+        Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
 
         return films;
     }
