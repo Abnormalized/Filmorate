@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -136,8 +135,6 @@ public class FilmDbStorage implements FilmStorage {
         sql += " GROUP BY f.name, f.film_id " +
                 "ORDER BY COUNT(l.film_id) DESC LIMIT ?";
         params.add(count);
-        Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
-
         Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
 
         return films;
