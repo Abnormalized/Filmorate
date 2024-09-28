@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @AllArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
@@ -58,6 +60,11 @@ public class ReviewDbStorage implements ReviewStorage {
             WHERE film_id = ?
             ORDER BY review_id DESC, useful_rating DESC
             LIMIT ?
+            """;
+    private static final String SQL_UPD_USEFUL = """
+            UPDATE reviews
+            SET useful_rating = ?
+            WHERE review_id = ?
             """;
 
     private final JdbcTemplate jdbcT;
@@ -133,22 +140,23 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review addLike(long reviewId, long userId) {
-        return null;
-    }
-
-    @Override
-    public Review addDislike(long reviewId, long userId) {
-        return null;
-    }
-
-    @Override
-    public Review deleteLike(long reviewId, long userId) {
-        return null;
-    }
-
-    @Override
-    public Review deleteDislike(long reviewId, long userId) {
-        return null;
+    public Review manageLike(Review review, ReviewStorage.LikeManageAction action) {
+        long useful = review.getUseful();
+        switch (action) {
+            case ADD_LIKE, DEL_DISLIKE -> ++useful;
+            case DEL_LIKE -> --useful;
+            case ADD_DISLIKE -> {
+                --useful;
+                if (useful == 0) {
+                    --useful;
+                }
+            }
+        }
+        int totalRowsUpdated = jdbcT.update(SQL_UPD_USEFUL, useful, review.getReviewId());
+        if (totalRowsUpdated == 0) {
+            throw new NoSuchElementException("Отзыв с id " + review.getReviewId() + " не найден");
+        }
+        review.setUseful(useful);
+        return review;
     }
 }
