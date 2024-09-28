@@ -8,8 +8,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.*;
-import java.util.*;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -106,24 +114,30 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopular(int count) {
-        String query = """
-                SELECT f.FILM_ID,
-                	   f.name,
-                       f.DESCRIPTION,
-                       f.RELEASE_DATE,
-                       f.DURATION,
-                       r.RATING_ID,
-                       r.rating_name,
-                       COUNT(user_id) AS likes
-                FROM USER_LIKED_FILMS ulf
-                JOIN FILMS f ON ulf.FILM_ID = f.FILM_ID
-                JOIN RATING r ON f.RATING_ID = r.RATING_ID
-                GROUP BY ulf.FILM_ID
-                ORDER BY likes DESC
-                LIMIT (?)""";
+    public Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
+        String sql = "SELECT f.*, COUNT(l.film_id) AS like_count " +
+                "FROM films f " +
+                "LEFT JOIN user_liked_films l ON f.film_id = l.film_id " +
+                "LEFT JOIN films_genre fg ON f.film_id = fg.film_id " +
+                "WHERE 1=1";
+        List<Object> params = new ArrayList<>();
 
-        return jdbcTemplate.query(query, rowMapper, count);
+        if (genreId != null) {
+            sql += " AND fg.genre_id = ?";
+            params.add(genreId);
+        }
+
+        if (year != null) {
+            sql += " AND YEAR(f.release_date) = ?";
+            params.add(year);
+        }
+
+        sql += " GROUP BY f.name, f.film_id " +
+                "ORDER BY COUNT(l.film_id) DESC LIMIT ?";
+        params.add(count);
+        Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
+
+        return films;
     }
 
     @Override
