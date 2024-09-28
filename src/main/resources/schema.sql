@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS films_genre (
     FILM_ID bigint,
     GENRE_ID int,
-	FOREIGN KEY (film_id) REFERENCES films (film_id),
+	FOREIGN KEY (film_id) REFERENCES films (film_id) ON DELETE CASCADE,
 	FOREIGN KEY (genre_id) REFERENCES genres (genre_id)
 );
 CREATE TABLE IF NOT EXISTS users (
@@ -38,12 +38,12 @@ CREATE TABLE IF NOT EXISTS users (
     birthday date
 );
 CREATE TABLE IF NOT EXISTS user_liked_films (
-	user_id bigint REFERENCES users (user_id),
-	film_id bigint REFERENCES films (film_id)
+	user_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+	film_id bigint REFERENCES films (film_id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS friend_users (
-	requester_id bigint REFERENCES users (user_id),
-	responser_id bigint REFERENCES users (user_id),
+	requester_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+	responser_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
 	accepted boolean
 );
 CREATE TABLE IF NOT EXISTS directors (

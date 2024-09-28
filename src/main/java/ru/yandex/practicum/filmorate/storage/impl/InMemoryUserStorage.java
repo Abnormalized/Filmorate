@@ -104,4 +104,13 @@ public class InMemoryUserStorage implements UserStorage {
     public Set<Long> getLikedFilms(User user) {
         return Set.of();
     }
+
+    @Override
+    public void deleteUserById(long id) {
+        users.remove(id);
+    }
+    @Override
+    public boolean checkById(long id) {
+        return false;
+    }
 }

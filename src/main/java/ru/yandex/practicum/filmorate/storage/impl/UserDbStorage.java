@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
@@ -172,5 +173,31 @@ public class UserDbStorage implements UserStorage {
         """;
 
         return new HashSet<>(jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("film_id"), user.getId()));
+    }
+
+    @Override
+    public boolean checkById(long id) {
+        if (id < 0) {
+            throw new NoSuchElementException("Ошибка: id не может быть меньше или равно нулю.");
+        }
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        boolean exists = false;
+        int count = 0;
+        try {
+            count = jdbcTemplate.queryForObject(sqlQuery, Integer.class, id);
+        } catch (DataAccessException e) {
+            throw new NoSuchElementException(String.format("Пользователь с id %s не найден", id));
+        }
+        exists = count > 0;
+        return exists;
+    }
+
+    @Override
+    public void deleteUserById(long id) {
+        if (!checkById(id)) {
+            throw new NoSuchElementException(String.format("Пользователь с id %s не найден", id));
+        }
+        String sqlQuery = "DELETE FROM users WHERE user_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 }

@@ -24,6 +24,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getById(long id) {
+        if (!checkById(id)) {
+            throw new NoSuchElementException(String.format("Фильм с id %d не найден", id));
+        }
         return jdbcTemplate.queryForObject("SELECT * FROM films WHERE film_id = ?",
                 new FilmMapper(), id);
     }
@@ -105,6 +108,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getPopular(int count) {
+
         String query = """
                 SELECT f.FILM_ID,
                 	   f.name,
@@ -177,4 +181,25 @@ public class FilmDbStorage implements FilmStorage {
             throw new NoSuchElementException("Отсортировать можно только по годам (year) и лайкам (likes)");
         }
     }
+
+    @Override
+    public boolean checkById(long id) {
+        if (id <= 0) {
+            throw new NoSuchElementException("Ошибка: id не может быть меньше или равно нулю.");
+        }
+        String sqlQuery = "SELECT COUNT(*) FROM films WHERE film_id = ?";
+        boolean exists = false;
+        int count = jdbcTemplate.queryForObject(sqlQuery, Integer.class, id);
+        exists = count > 0;
+        return exists;
+    }
+    @Override
+    public void deleteFilmById(long id) {
+        if (!checkById(id)) {
+            throw new NoSuchElementException(String.format("Фильм с id %d не найден", id));
+        }
+        String sqlQuery = "DELETE FROM films WHERE film_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
+    }
+
 }

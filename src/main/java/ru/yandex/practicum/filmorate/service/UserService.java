@@ -66,4 +66,8 @@ public class UserService {
     public List<User> getFriendList(long userId) {
         return userStorage.getAllFriends(getUserById(userId)).stream().map(this::getUserById).toList();
     }
+
+    public void deleteUserById(long id) {
+        userStorage.deleteUserById(id);
+    }
 }
