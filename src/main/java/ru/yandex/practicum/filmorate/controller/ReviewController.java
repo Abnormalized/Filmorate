@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 @RestController
 @Validated
@@ -41,28 +42,28 @@ public class ReviewController {
         return service.updateReview(review);
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public Review addLike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
-        return service.addLike(reviewId, userId);
-    }
-
-    @PutMapping("/{id}/dislike/{userId}")
-    public Review addDislike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
-        return service.addDislike(reviewId, userId);
-    }
-
     @DeleteMapping("/{id}")
     public Review deleteReviewById(@PathVariable @Positive long id) {
         return service.deleteReviewById(id);
     }
 
+    @PutMapping("/{id}/like/{userId}")
+    public Review addLike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+        return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.ADD_LIKE);
+    }
+
+    @PutMapping("/{id}/dislike/{userId}")
+    public Review addDislike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
+        return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.ADD_DISLIKE);
+    }
+
     @DeleteMapping("/{id}/like/{userId}")
     public Review deleteLike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
-        return service.deleteLike(reviewId, userId);
+        return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.DEL_LIKE);
     }
 
     @DeleteMapping("/{id}/dislike/{userId}")
     public Review deleteDislike(@PathVariable("id") @Positive long reviewId, @PathVariable @Positive long userId) {
-        return service.deleteDislike(reviewId, userId);
+        return service.manageLike(reviewId, userId, ReviewStorage.LikeManageAction.DEL_DISLIKE);
     }
 }

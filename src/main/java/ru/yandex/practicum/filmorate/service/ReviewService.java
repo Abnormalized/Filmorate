@@ -43,19 +43,9 @@ public class ReviewService {
         return review;
     }
 
-    public Review addLike(long reviewId, long userId) {
-        return null;
-    }
-
-    public Review deleteLike(long reviewId, long userId) {
-        return null;
-    }
-
-    public Review addDislike(long reviewId, long userId) {
-        return null;
-    }
-
-    public Review deleteDislike(long reviewId, long userId) {
-        return null;
+    public Review manageLike(long reviewId, long userId, ReviewStorage.LikeManageAction action) {
+        userService.validateUserPresenceById(userId);
+        Review review = getReviewById(reviewId);
+        return reviewStorage.manageLike(review, action);
     }
 }
