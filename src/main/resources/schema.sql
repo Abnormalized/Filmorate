@@ -52,14 +52,14 @@ CREATE TABLE IF NOT EXISTS directors (
 	name varchar(50)
 );
 CREATE TABLE IF NOT EXISTS director_films (
-    director_id bigint REFERENCES directors (director_id),
-    film_id bigint REFERENCES films (film_id),
+    director_id bigint REFERENCES directors (director_id) ON DELETE CASCADE,
+    film_id bigint REFERENCES films (film_id) ON DELETE CASCADE,
     PRIMARY KEY (director_id, film_id)
 );
 CREATE TABLE IF NOT EXISTS reviews (
   review_id bigint PRIMARY KEY auto_increment,
-  user_id bigint REFERENCES users (user_id),
-  film_id bigint REFERENCES films (film_id),
+  user_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+  film_id bigint REFERENCES films (film_id) ON DELETE CASCADE,
   content varchar(350),
   is_positive boolean,
   useful_rating bigint
