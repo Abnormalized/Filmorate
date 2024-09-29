@@ -18,4 +18,8 @@ public interface GenreStorage {
     void saveGenresInfo(long filmId, List<Genre> genres);
 
     boolean containsFilmGenre(long genreId, long filmId);
+
+    void loadGenres(Collection<Film> films);
+
+    List<Genre> findAllByIdArray(int[] ids);
 }

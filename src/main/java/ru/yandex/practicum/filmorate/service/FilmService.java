@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -21,7 +22,9 @@ public class FilmService {
     final DirectorService directorService;
 
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        Collection<Film> films = filmStorage.findAll();
+        loadGenres(films);
+        return films;
     }
 
     public Film getFilmById(long id) {
@@ -71,6 +74,7 @@ public class FilmService {
         for (Film film : films) {
             setFilmProperties(film);
         }
+        loadGenres(films);
         return films;
     }
 
@@ -78,6 +82,26 @@ public class FilmService {
         ratingService.setFilmRating(film);
         genreService.setFilmGenres(film);
         directorService.setFilmDirectors(film);
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+
+        Collection<Film> films = filmStorage.getRecommendations(userId);
+
+        if (films != null) {
+            loadGenres(films);
+        }
+        return films;
+    }
+
+    public void loadGenres(Collection<Film> films) {
+
+        for (Film film : films) {
+            if (film.getGenres() == null) {
+                film.setGenres(new ArrayList<>());
+            }
+        }
+        genreService.loadGenres(films);
     }
 
     public void deleteFilmById(long id) {

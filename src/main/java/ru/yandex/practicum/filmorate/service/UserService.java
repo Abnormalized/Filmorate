@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FilmService filmService;
 
     public User getUserById(long id) {
         return userStorage.getById(id);
@@ -69,6 +71,14 @@ public class UserService {
 
     public List<User> getFriendList(long userId) {
         return userStorage.getAllFriends(getUserById(userId)).stream().map(this::getUserById).toList();
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+
+        if (userStorage.getById(userId) == null) {
+            throw new NoSuchElementException();
+        }
+        return filmService.getRecommendations(userId);
     }
 
     public void deleteUserById(long id) {

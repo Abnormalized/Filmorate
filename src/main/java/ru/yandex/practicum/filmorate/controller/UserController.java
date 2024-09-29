@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -74,6 +76,13 @@ public class UserController {
     public void removeFromFriendList(@PathVariable long id, @PathVariable(value = "friend-id") long friendId) {
         userService.deleteUserFromFriend(id, friendId);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}/recommendations")
+    public Collection<Film> getRecommendations(@PathVariable long id) {
+        return userService.getRecommendations(id);
+    }
+
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{userId}")
