@@ -53,4 +53,8 @@ public class DirectorService {
     void setFilmDirectors(Film film) {
         directorStorage.setFilmDirectors(film);
     }
+
+    public void loadDirectors(Collection<Film> films) {
+        directorStorage.loadDirectors(films);
+    }
 }

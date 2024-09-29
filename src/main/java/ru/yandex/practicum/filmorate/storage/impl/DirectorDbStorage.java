@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -29,13 +30,23 @@ public class DirectorDbStorage implements DirectorStorage {
     static final String GET_COUNT_OF_DIRECTORS = "SELECT COUNT(director_id) FROM directors";
     static final String SET_DIRECTOR_FILM = "INSERT INTO director_films(director_id, film_id) VALUES (?, ?)";
     static final String DELETE_FILM_DIRECTORS = "DELETE FROM director_films WHERE film_id = ?";
+    static final String DELETE_FILM_DIRECTORS_BY_DIRECTOR_ID = "DELETE FROM director_films WHERE director_id = ?";
     static final String FIND_PAIR_DIRECTOR_FILM = "SELECT * FROM director_films WHERE director_id = ? AND film_id = ?";
     static final String GET_FILM_DIRECTORS = """
             SELECT df.director_id,
-                   d.name AS director_name
+                   d.name
             FROM director_films df
             JOIN directors d ON d.director_id = df.director_id
-            WHERE film_id = ?
+            WHERE df.film_id = ?
+            """;
+    static final String GET_FILMS_DIRECTORS = """
+            SELECT df.director_id,
+                   d.name,
+                   df.film_id
+            FROM director_films df
+            JOIN directors d ON d.director_id = df.director_id
+            WHERE df.film_id
+             IN (#ids)
             """;
 
     @Override
@@ -73,6 +84,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public void delete(long id) {
+        jdbcTemplate.update(DELETE_FILM_DIRECTORS_BY_DIRECTOR_ID, id);
         jdbcTemplate.update(DELETE_DIRECTOR_BY_ID, id);
     }
 
@@ -106,5 +118,19 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public void setFilmDirectors(Film film) {
         film.setDirectors(new ArrayList<>(jdbcTemplate.query(GET_FILM_DIRECTORS, directorMapper, film.getId())));
+    }
+
+    @Override
+    public void loadDirectors(Collection<Film> films) {
+
+        if (films.size() != 0) {
+            String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
+            final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, film -> film));
+            jdbcTemplate.query(GET_FILMS_DIRECTORS
+                    .replace("#ids", inSql), (rs) -> {
+                final Film film = filmById.get(rs.getLong("film_id"));
+                film.addDirector(directorMapper.mapRow(rs, 0));
+            }, films.stream().map(Film::getId).toArray());
+        }
     }
 }
