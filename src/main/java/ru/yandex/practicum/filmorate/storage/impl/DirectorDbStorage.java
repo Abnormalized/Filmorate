@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DirectorDbStorage implements DirectorStorage {
+
     final JdbcTemplate jdbcTemplate;
     final RowMapper<Director> directorMapper;
 
