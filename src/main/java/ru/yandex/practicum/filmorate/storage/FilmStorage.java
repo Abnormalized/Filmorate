@@ -28,5 +28,4 @@ public interface FilmStorage {
 
     void deleteFilmById(long id);
 
-    boolean checkById(long id);
 }
