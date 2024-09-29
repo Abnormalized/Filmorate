@@ -28,6 +28,37 @@ public class FilmDbStorage implements FilmStorage {
     final DirectorStorage directorStorage;
     final RowMapper<Film> rowMapper;
 
+    private static final String sqlQueryRecommendations = """
+                            SELECT FILMS.*, RATING.RATING_NAME
+                            FROM FILMS
+                            JOIN (
+                              SELECT other_users.USER_ID, other_users.FILM_ID
+                              FROM USER_LIKED_FILMS other_users
+                              LEFT JOIN (
+                                SELECT FILM_ID, USER_ID
+                                FROM USER_LIKED_FILMS
+                                WHERE USER_ID = ?
+                              ) this_user ON other_users.FILM_ID = this_user.FILM_ID
+                              WHERE other_users.USER_ID <> ?
+                                AND this_user.USER_ID IS NULL
+                            ) NOT_LIKED_COUNT ON NOT_LIKED_COUNT.FILM_ID = FILMS.film_id
+                            JOIN (
+                              SELECT other_users.USER_ID, COUNT(other_users.FILM_ID) AS film_count
+                              FROM USER_LIKED_FILMS this_user
+                              JOIN USER_LIKED_FILMS other_users ON this_user.FILM_ID = other_users.FILM_ID
+                              WHERE this_user.USER_ID = ?
+                                AND other_users.USER_ID <> this_user.USER_ID
+                              GROUP BY other_users.USER_ID
+                            ) COMMON_LIKES_COUNT ON NOT_LIKED_COUNT.user_id = COMMON_LIKES_COUNT.user_id
+                            JOIN (
+                              SELECT USER_LIKED_FILMS.FILM_ID, COUNT(USER_LIKED_FILMS.USER_ID) AS like_count
+                              FROM USER_LIKED_FILMS
+                              GROUP BY USER_LIKED_FILMS.FILM_ID
+                            ) LIKES_COUNT ON FILMS.film_id = LIKES_COUNT.film_id
+            LEFT JOIN RATING ON FILMS.rating_id = RATING.rating_id
+                            GROUP BY FILMS.film_id, FILMS.description, FILMS.duration, FILMS.name, FILMS.rating_id, FILMS.release_date
+                            ORDER BY COMMON_LIKES_COUNT.film_count, LIKES_COUNT.like_count""";
+
     @Override
     public Optional<Film> getById(long id) {
         try {
@@ -81,7 +112,7 @@ public class FilmDbStorage implements FilmStorage {
         Optional<Film> returnFilm = getById(filmFromDb.getId());
 
         if (returnFilm.isEmpty()) {
-            throw new  NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден");
+            throw new NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден");
         }
 
         Film newFilm = returnFilm.get();
@@ -150,7 +181,7 @@ public class FilmDbStorage implements FilmStorage {
         Optional<Film> returnFilm = getById(filmFromDb.getId());
 
         if (returnFilm.isEmpty()) {
-            throw new  NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден");
+            throw new NoSuchElementException("Фильм с id " + filmFromDb.getId() + " не найден");
         }
 
         Film newFilm = returnFilm.get();
@@ -247,38 +278,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> getRecommendations(long userId) {
 
-        String sqlQuery = """
-                                SELECT FILMS.*, RATING.RATING_NAME
-                                FROM FILMS
-                                JOIN (
-                                  SELECT other_users.USER_ID, other_users.FILM_ID
-                                  FROM USER_LIKED_FILMS other_users
-                                  LEFT JOIN (
-                                    SELECT FILM_ID, USER_ID
-                                    FROM USER_LIKED_FILMS
-                                    WHERE USER_ID = ?
-                                  ) this_user ON other_users.FILM_ID = this_user.FILM_ID
-                                  WHERE other_users.USER_ID <> ?
-                                    AND this_user.USER_ID IS NULL
-                                ) NOT_LIKED_COUNT ON NOT_LIKED_COUNT.FILM_ID = FILMS.film_id
-                                JOIN (
-                                  SELECT other_users.USER_ID, COUNT(other_users.FILM_ID) AS film_count
-                                  FROM USER_LIKED_FILMS this_user
-                                  JOIN USER_LIKED_FILMS other_users ON this_user.FILM_ID = other_users.FILM_ID
-                                  WHERE this_user.USER_ID = ?
-                                    AND other_users.USER_ID <> this_user.USER_ID
-                                  GROUP BY other_users.USER_ID
-                                ) COMMON_LIKES_COUNT ON NOT_LIKED_COUNT.user_id = COMMON_LIKES_COUNT.user_id
-                                JOIN (
-                                  SELECT USER_LIKED_FILMS.FILM_ID, COUNT(USER_LIKED_FILMS.USER_ID) AS like_count
-                                  FROM USER_LIKED_FILMS
-                                  GROUP BY USER_LIKED_FILMS.FILM_ID
-                                ) LIKES_COUNT ON FILMS.film_id = LIKES_COUNT.film_id
-                LEFT JOIN RATING ON FILMS.rating_id = RATING.rating_id
-                                GROUP BY FILMS.film_id, FILMS.description, FILMS.duration, FILMS.name, FILMS.rating_id, FILMS.release_date
-                                ORDER BY COMMON_LIKES_COUNT.film_count, LIKES_COUNT.like_count""";
-
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> {
+        return jdbcTemplate.query(sqlQueryRecommendations, (rs, rowNum) -> {
             Film film = new Film();
             film.setId(rs.getLong("film_id"));
             film.setName(rs.getString("name"));

@@ -28,7 +28,7 @@ public class Film {
     @DurationMin
     Duration duration;
     Rating mpa;
-    List<Genre> genres;
+    List<Genre> genres = new ArrayList<>();
     List<Director> directors;
 
     public long getDuration() {
@@ -36,11 +36,6 @@ public class Film {
     }
 
     public void addGenre(Genre genre) {
-
-        if (genres == null) {
-            setGenres(new ArrayList<>());
-        }
-
         genres.add(genre);
     }
 }
