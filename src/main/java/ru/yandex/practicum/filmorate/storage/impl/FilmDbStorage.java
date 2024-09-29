@@ -34,6 +34,9 @@ public class FilmDbStorage implements FilmStorage {
             Film film = jdbcTemplate.queryForObject("SELECT films.*, RATING.rating_name  FROM  films " +
                     "LEFT JOIN RATING ON FILMS.rating_id = RATING.rating_id" +
                     " WHERE film_id = ?", rowMapper, id);
+
+            genreStorage.setFilmGenres(film);
+
             return Optional.ofNullable(film);
         } catch (DataAccessException exception) {
             return Optional.empty();
@@ -162,8 +165,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
-        String sql = "SELECT f.*, COUNT(l.film_id) AS like_count " +
+        String sql = "SELECT f.*, RATING.rating_name, COUNT(l.film_id) AS like_count " +
                 "FROM films f " +
+                "LEFT JOIN RATING ON f.rating_id = RATING.rating_id " +
                 "LEFT JOIN user_liked_films l ON f.film_id = l.film_id " +
                 "LEFT JOIN films_genre fg ON f.film_id = fg.film_id " +
                 "WHERE 1=1";
