@@ -67,7 +67,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null) {
 
-            genries = genreStorage.findAllByIdArray(film.getGenres().stream().map(genre -> genre.getId()).mapToInt(Integer::intValue).toArray());
+            genries = genreStorage.findAllByIdArray(film.getGenres().stream().map(Genre::getId).mapToInt(Integer::intValue).toArray());
 
             checkGenres(genries, film.getGenres());
         }
@@ -136,7 +136,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (filmNewInfo.getGenres() != null) {
 
-            genries = genreStorage.findAllByIdArray(filmNewInfo.getGenres().stream().map(genre -> genre.getId()).mapToInt(Integer::intValue).toArray());
+            genries = genreStorage.findAllByIdArray(filmNewInfo.getGenres().stream().map(Genre::getId).mapToInt(Integer::intValue).toArray());
 
             checkGenres(genries, filmNewInfo.getGenres());
         }
@@ -182,9 +182,8 @@ public class FilmDbStorage implements FilmStorage {
         sql += " GROUP BY f.name, f.film_id " +
                 "ORDER BY COUNT(l.film_id) DESC LIMIT ?";
         params.add(count);
-        Collection<Film> films = jdbcTemplate.query(sql, rowMapper, params.toArray());
 
-        return films;
+        return jdbcTemplate.query(sql, rowMapper, params.toArray());
     }
 
     @Override
