@@ -294,6 +294,7 @@ public class FilmDbStorage implements FilmStorage {
                 SELECT *
                 FROM director_films df
                 JOIN films f ON df.film_id = f.film_id
+                JOIN rating r ON f.rating_id = r.rating_id
                 WHERE director_id = ?
                 GROUP BY f.film_id
                 ORDER BY f.release_date ASC
