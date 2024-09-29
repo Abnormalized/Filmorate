@@ -14,6 +14,8 @@ public interface FilmStorage {
 
     Collection<Film> findAll();
 
+    Collection<Film> findAll(String searchQuery, String by);
+
     Film update(@RequestBody Film filmNewInfo);
 
     Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year);

@@ -59,6 +59,19 @@ public class FilmDbStorage implements FilmStorage {
                             GROUP BY FILMS.film_id, FILMS.description, FILMS.duration, FILMS.name, FILMS.rating_id, FILMS.release_date
                             ORDER BY COMMON_LIKES_COUNT.film_count, LIKES_COUNT.like_count""";
 
+    private static final String SQL_SEARCH_BEG = """
+               SELECT f.*
+               FROM films f
+               LEFT JOIN user_liked_films l ON l.film_id = f.film_id
+               LEFT JOIN director_films df ON df.film_id = f.film_id
+               LEFT JOIN directors d ON d.director_id = df.director_id
+               WHERE
+            """;
+    private static final String SQL_SEARCH_END = """
+            GROUP BY f.film_id
+            ORDER BY COUNT(l.film_id) DESC
+            """;
+
     @Override
     public Optional<Film> getById(long id) {
         try {
@@ -129,6 +142,26 @@ public class FilmDbStorage implements FilmStorage {
     public Collection<Film> findAll() {
         return jdbcTemplate.query("SELECT films.*, RATING.rating_name FROM films" +
                 " LEFT JOIN RATING ON FILMS.rating_id = RATING.rating_id", rowMapper);
+    }
+
+    @Override
+    public Collection<Film> findAll(String searchQuery, String by) {
+        searchQuery = "%" + searchQuery + "%";
+        String sqlSearchMid = ".name LIKE ?";
+        int paramsCnt = 1;
+
+        switch (by) {
+            case "title" -> sqlSearchMid = "f" + sqlSearchMid;
+            case "director" -> sqlSearchMid = "d" + sqlSearchMid;
+            case "title,director", "director,title" -> {
+                sqlSearchMid = "f" + sqlSearchMid + " OR " + "d" + sqlSearchMid;
+                ++paramsCnt;
+            }
+            default -> throw new RuntimeException("Невалидные параметры запроса " + by);
+        }
+
+        String sqlSearch = SQL_SEARCH_BEG + sqlSearchMid + SQL_SEARCH_END;
+        return jdbcTemplate.query(sqlSearch, rowMapper, Collections.nCopies(paramsCnt, searchQuery).toArray());
     }
 
     @Override

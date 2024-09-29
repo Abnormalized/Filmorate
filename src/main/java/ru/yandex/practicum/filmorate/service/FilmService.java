@@ -26,6 +26,12 @@ public class FilmService {
         return films;
     }
 
+    public Collection<Film> findAll(String searchQuery, String by) {
+        Collection<Film> films = filmStorage.findAll(searchQuery, by);
+        loadGenres(films);
+        return films;
+    }
+
     public Film getFilmById(long id) {
         Film film = filmStorage.getById(id)
                 .orElseThrow(() -> new NoSuchElementException("Фильм с id " + id + " не найден"));

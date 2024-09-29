@@ -2,9 +2,13 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +24,8 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 
+@Slf4j
+@Validated
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
@@ -31,6 +37,12 @@ public class FilmController {
     @GetMapping
     public Collection<Film> findAll() {
         return filmService.findAll();
+    }
+
+    @GetMapping("/search")
+    public Collection<Film> findAll(@RequestParam(name = "query") @NotNull String searchQuery,
+                                    @RequestParam @NotBlank String by) {
+        return filmService.findAll(searchQuery, by);
     }
 
     @ResponseStatus(HttpStatus.OK)
