@@ -280,21 +280,21 @@ public class FilmDbStorage implements FilmStorage {
                         f.DURATION,
                         f.rating_id,
                         r.rating_name,
-                        COUNT(user_id) AS likes
+                        COUNT(ulf.user_id) AS likes
                 FROM director_films df
                 JOIN films f ON f.film_id = df.film_id
-                JOIN user_liked_films ulf ON f.film_id = ulf.film_id
-                JOIN rating r ON f.rating_id = r.rating_id
-                WHERE director_id = ?
+                LEFT JOIN user_liked_films ulf ON f.film_id = ulf.film_id
+                LEFT JOIN rating r ON f.rating_id = r.rating_id
+                WHERE df.director_id = ?
                 GROUP BY f.FILM_ID
                 ORDER BY likes DESC
                 """;
 
         String sqlQueryWithSortByYears = """
-                SELECT *
+                SELECT f.*, r.rating_name
                 FROM director_films df
                 JOIN films f ON df.film_id = f.film_id
-                JOIN rating r ON f.rating_id = r.rating_id
+                LEFT JOIN rating r ON f.rating_id = r.rating_id
                 WHERE director_id = ?
                 GROUP BY f.film_id
                 ORDER BY f.release_date ASC

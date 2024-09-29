@@ -24,4 +24,6 @@ public interface DirectorStorage {
     boolean containsDirectorFilm(long directorId, long filmId);
 
     void setFilmDirectors(Film film);
+
+    void loadDirectors(Collection<Film> films);
 }

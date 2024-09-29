@@ -23,6 +23,7 @@ public class FilmService {
     public Collection<Film> findAll() {
         Collection<Film> films = filmStorage.findAll();
         loadGenres(films);
+        loadDirectors(films);
         return films;
     }
 
@@ -48,7 +49,7 @@ public class FilmService {
         genreService.validateGenreId(film.getGenres());
         directorService.validateDirectorsId(film.getDirectors());
         Film createdFilm = filmStorage.create(film);
-        directorService.setFilmDirectors(film);
+        directorService.setFilmDirectors(createdFilm);
         return createdFilm;
     }
 
@@ -75,26 +76,29 @@ public class FilmService {
     }
 
     public Collection<Film> getDirectorFilms(long directorId, String sortType) {
+
+        directorService.getDirectorById(directorId);
         Collection<Film> films = filmStorage.getDirectorFilms(directorId, sortType);
-        for (Film film : films) {
-            directorService.setFilmDirectors(film);
-        }
         loadGenres(films);
+        loadDirectors(films);
         return films;
     }
 
     public Collection<Film> getRecommendations(long userId) {
 
         Collection<Film> films = filmStorage.getRecommendations(userId);
+        loadGenres(films);
+        loadDirectors(films);
 
-        if (!films.isEmpty()) {
-            loadGenres(films);
-        }
         return films;
     }
 
     public void loadGenres(Collection<Film> films) {
         genreService.loadGenres(films);
+    }
+
+    public void loadDirectors(Collection<Film> films) {
+        directorService.loadDirectors(films);
     }
 
     public void deleteFilmById(long id) {
