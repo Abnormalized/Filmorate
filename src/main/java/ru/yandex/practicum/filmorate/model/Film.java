@@ -30,7 +30,7 @@ public class Film {
     @NotNull
     Rating mpa;
     List<Genre> genres = new ArrayList<>();
-    List<Director> directors;
+    List<Director> directors = new ArrayList<>();
 
     public long getDuration() {
         return duration.toSeconds();
