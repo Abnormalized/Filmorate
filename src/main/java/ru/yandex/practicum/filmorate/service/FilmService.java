@@ -21,13 +21,15 @@ public class FilmService {
     final DirectorService directorService;
 
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        Collection<Film> films = filmStorage.findAll();
+        loadGenres(films);
+        return films;
     }
 
     public Film getFilmById(long id) {
         Film film = filmStorage.getById(id)
                 .orElseThrow(() -> new NoSuchElementException("Фильм с id " + id + " не найден"));
-        setFilmProperties(film);
+        directorService.setFilmDirectors(film);
         return film;
     }
 
@@ -40,13 +42,13 @@ public class FilmService {
         genreService.validateGenreId(film.getGenres());
         directorService.validateDirectorsId(film.getDirectors());
         Film createdFilm = filmStorage.create(film);
-        setFilmProperties(createdFilm);
+        directorService.setFilmDirectors(film);
         return createdFilm;
     }
 
     public Film update(Film filmNewInfo) {
         Film film = filmStorage.update(filmNewInfo);
-        setFilmProperties(film);
+        directorService.setFilmDirectors(film);
         return film;
     }
 
@@ -69,15 +71,24 @@ public class FilmService {
     public Collection<Film> getDirectorFilms(long directorId, String sortType) {
         Collection<Film> films = filmStorage.getDirectorFilms(directorId, sortType);
         for (Film film : films) {
-            setFilmProperties(film);
+            directorService.setFilmDirectors(film);
+        }
+        loadGenres(films);
+        return films;
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+
+        Collection<Film> films = filmStorage.getRecommendations(userId);
+
+        if (!films.isEmpty()) {
+            loadGenres(films);
         }
         return films;
     }
 
-    public void setFilmProperties(Film film) {
-        ratingService.setFilmRating(film);
-        genreService.setFilmGenres(film);
-        directorService.setFilmDirectors(film);
+    public void loadGenres(Collection<Film> films) {
+        genreService.loadGenres(films);
     }
 
     public void deleteFilmById(long id) {

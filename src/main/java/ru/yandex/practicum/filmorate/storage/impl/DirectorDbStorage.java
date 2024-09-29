@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
-import ru.yandex.practicum.filmorate.storage.mapper.DirectorMapper;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ import java.util.*;
 public class DirectorDbStorage implements DirectorStorage {
 
     final JdbcTemplate jdbcTemplate;
-    final DirectorMapper directorMapper = new DirectorMapper();
+    final RowMapper<Director> directorMapper;
 
     static final String GET_DIRECTORS = "SELECT * FROM directors";
     static final String GET_DIRECTOR_BY_ID = "SELECT * FROM directors WHERE director_id = ?";

@@ -38,4 +38,8 @@ public class GenreService {
     void setFilmGenres(Film film) {
         genreStorage.setFilmGenres(film);
     }
+
+    public void loadGenres(Collection<Film> films) {
+        genreStorage.loadGenres(films);
+    }
 }

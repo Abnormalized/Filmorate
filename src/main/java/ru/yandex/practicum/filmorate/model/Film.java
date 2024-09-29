@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,11 +27,16 @@ public class Film {
     @NotNull
     @DurationMin
     Duration duration;
+    @NotNull
     Rating mpa;
-    List<Genre> genres;
+    List<Genre> genres = new ArrayList<>();
     List<Director> directors;
 
     public long getDuration() {
         return duration.toSeconds();
+    }
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
     }
 }

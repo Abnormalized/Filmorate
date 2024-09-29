@@ -47,7 +47,7 @@ public class UserDbStorage implements UserStorage {
                 user.getName(),
                 user.getBirthday());
 
-        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE login = ? AND email = ?",
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE login = ? AND email = ? LIMIT(1)",
                 new UserMapper(), user.getLogin(), user.getEmail());
     }
 
