@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmService {
+
     final FilmStorage filmStorage;
     final GenreService genreService;
     final RatingService ratingService;
@@ -30,6 +31,7 @@ public class FilmService {
         Collection<Film> films = filmStorage.findAll(searchQuery, by);
         loadGenres(films);
         loadDirectors(films);
+        loadDirectors(films);
         return films;
     }
 
@@ -45,9 +47,9 @@ public class FilmService {
     }
 
     public Film create(Film film) {
-        ratingService.validateMpa(film.getMpa().getId());
+        ratingService.validateMpaId(film.getMpa().getId());
         genreService.validateGenreId(film.getGenres());
-        directorService.validateDirectors(film.getDirectors());
+        directorService.validateDirectorsId(film.getDirectors());
         Film createdFilm = filmStorage.create(film);
         directorService.setFilmDirectors(createdFilm);
         return createdFilm;
