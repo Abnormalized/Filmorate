@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -82,7 +83,7 @@ public class FilmController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{filmId}")
-    public void deleteFilmById(@PathVariable long filmId) {
+    public void deleteFilmById(@PathVariable @Positive long filmId) {
         filmService.deleteFilmById(filmId);
     }
 }

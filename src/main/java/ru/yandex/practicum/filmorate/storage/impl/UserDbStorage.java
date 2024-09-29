@@ -177,27 +177,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean checkById(long id) {
-        if (id <= 0) {
-            throw new NoSuchElementException("Ошибка: id не может быть меньше или равно нулю.");
-        }
-        String sqlQuery = "SELECT COUNT(*) FROM users WHERE user_id = ?";
-        boolean exists = false;
-        int count = 0;
-        try {
-            count = jdbcTemplate.queryForObject(sqlQuery, Integer.class, id);
-        } catch (DataAccessException e) {
-            throw new NoSuchElementException(String.format("Пользователь с id %s не найден", id));
-        }
-        exists = count > 0;
-        return exists;
-    }
-
-    @Override
     public void deleteUserById(long id) {
-        if (!checkById(id)) {
-            throw new NoSuchElementException(String.format("Пользователь с id %s не найден", id));
-        }
         String sqlQuery = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sqlQuery, id);
     }

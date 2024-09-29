@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -76,7 +77,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{userId}")
-    public void deleteUserById(@PathVariable long userId) {
+    public void deleteUserById(@PathVariable @Positive long userId) {
         userService.deleteUserById(userId);
     }
 }

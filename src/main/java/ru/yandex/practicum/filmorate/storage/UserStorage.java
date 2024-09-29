@@ -32,6 +32,4 @@ public interface UserStorage {
     Set<Long> getLikedFilms(User user);
 
     void deleteUserById(long id);
-
-    boolean checkById(long id);
 }
