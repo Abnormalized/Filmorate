@@ -27,6 +27,7 @@ public class Film {
     @NotNull
     @DurationMin
     Duration duration;
+    @NotNull
     Rating mpa;
     List<Genre> genres = new ArrayList<>();
     List<Director> directors;
