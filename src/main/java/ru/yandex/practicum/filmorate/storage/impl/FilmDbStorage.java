@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import jakarta.validation.ValidationException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -190,7 +191,13 @@ public class FilmDbStorage implements FilmStorage {
         } else if (Objects.equals(sortType, "year")) {
             return jdbcTemplate.query(sqlQueryWithSortByYears, rowMapper, directorId);
         } else {
-            throw new NoSuchElementException("Отсортировать можно только по годам (year) и лайкам (likes)");
+            throw new ValidationException("Отсортировать можно только по годам (year) и лайкам (likes)");
         }
+    }
+
+    @Override
+    public void deleteFilmById(long id) {
+        String sqlQuery = "DELETE FROM films WHERE film_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 }

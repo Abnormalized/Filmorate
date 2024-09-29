@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
 
-@Slf4j
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
@@ -80,5 +79,11 @@ public class FilmController {
     public void removeLikeFromFilm(@PathVariable(value = "disliked-film-id") long dislikedFilmId,
                                    @PathVariable(value = "user-id") long userId) {
         filmService.removeLike(userId, dislikedFilmId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("{filmId}")
+    public void deleteFilmById(@PathVariable @Positive long filmId) {
+        filmService.deleteFilmById(filmId);
     }
 }

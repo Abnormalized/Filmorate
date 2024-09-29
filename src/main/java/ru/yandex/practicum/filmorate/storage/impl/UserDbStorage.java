@@ -7,7 +7,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -18,8 +21,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getById(long id) {
         Integer res = jdbcTemplate.queryForObject(
-                        "SELECT COUNT(user_id) AS sum FROM users WHERE user_id = ?",
-                        (rs, rowNum) -> rs.getInt("sum"), id);
+                "SELECT COUNT(user_id) AS sum FROM users WHERE user_id = ?",
+                (rs, rowNum) -> rs.getInt("sum"), id);
         if (res == null || res == 0) {
             throw new NoSuchElementException("Пользователь с id " + id + " не найден");
         }
@@ -87,10 +90,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Set<Long> getAcceptedFriends(long userId) {
         final String query = """
-        SELECT requester_id
-        FROM friend_users
-        WHERE responser_id = ? AND accepted = true
-        """;
+                SELECT requester_id
+                FROM friend_users
+                WHERE responser_id = ? AND accepted = true
+                """;
 
         return new HashSet<>(jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("requester_id"), userId));
     }
@@ -100,10 +103,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Set<Long> getAskedFriends(long userId) {
         final String query = """
-        SELECT responser_id
-        FROM friend_users
-        WHERE requester_id = ?
-        """;
+                SELECT responser_id
+                FROM friend_users
+                WHERE requester_id = ?
+                """;
 
         return new HashSet<>(jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("responser_id"), userId));
     }
@@ -112,10 +115,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Set<Long> getAskedUsers(long userId) {
         final String query = """
-        SELECT responser_id
-        FROM friend_users
-        WHERE requester_id = ?
-        """;
+                SELECT responser_id
+                FROM friend_users
+                WHERE requester_id = ?
+                """;
 
         return new HashSet<>(jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("responser_id"), userId));
     }
@@ -152,10 +155,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public boolean deleteFriend(User user, User friend) {
         String sqlQuery = """
-                    DELETE FROM friend_users
-                    WHERE requester_id = ? AND responser_id = ?
-                    OR responser_id = ? AND requester_id = ?
-                    """;
+                DELETE FROM friend_users
+                WHERE requester_id = ? AND responser_id = ?
+                OR responser_id = ? AND requester_id = ?
+                """;
         jdbcTemplate.update(sqlQuery, user.getId(), friend.getId(), user.getId(), friend.getId());
         return true;
     }
@@ -163,12 +166,18 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Set<Long> getLikedFilms(User user) {
         final String query = """
-        SELECT user_id,
-               film_id
-        FROM user_liked_films
-        WHERE user_id = ?
-        """;
+                SELECT user_id,
+                       film_id
+                FROM user_liked_films
+                WHERE user_id = ?
+                """;
 
         return new HashSet<>(jdbcTemplate.query(query, (rs, rowNum) -> rs.getLong("film_id"), user.getId()));
+    }
+
+    @Override
+    public void deleteUserById(long id) {
+        String sqlQuery = "DELETE FROM users WHERE user_id = ?";
+        jdbcTemplate.update(sqlQuery, id);
     }
 }
