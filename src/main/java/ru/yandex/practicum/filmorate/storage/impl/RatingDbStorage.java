@@ -22,7 +22,7 @@ public class RatingDbStorage implements RatingStorage {
     }
 
     @Override
-    public Optional<Rating> getById(int id) {
+    public Optional<Rating> getById(long id) {
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject("SELECT * FROM rating WHERE rating_id = ?", new RatingMapper(), id)

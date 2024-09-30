@@ -10,7 +10,7 @@ public interface RatingStorage {
 
     Collection<Rating> getAll();
 
-    Optional<Rating> getById(int id);
+    Optional<Rating> getById(long id);
 
     int getCountOfMpa();
 

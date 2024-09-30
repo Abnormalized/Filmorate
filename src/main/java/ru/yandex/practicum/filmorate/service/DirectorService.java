@@ -12,7 +12,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class DirectorService {
-
     private final DirectorStorage directorStorage;
 
     public Collection<Director> findAll() {
@@ -20,18 +19,15 @@ public class DirectorService {
     }
 
     public Director getDirectorById(long id) {
-        return directorStorage.getById(id).orElseThrow(NoSuchElementException::new);
+        return directorStorage.getById(id)
+                .orElseThrow(() -> new NoSuchElementException("Режиссер с id " + id + " не найден"));
     }
 
     public Director create(Director director) {
-        if (director == null) {
-            throw new ValidationException();
-        }
         return directorStorage.create(director);
     }
 
     public Director update(Director directorNewInfo) {
-        validateDirectorsId(List.of(directorNewInfo));
         return directorStorage.update(directorNewInfo);
     }
 
@@ -39,14 +35,11 @@ public class DirectorService {
         directorStorage.delete(id);
     }
 
-    void validateDirectorsId(List<Director> directors) {
-        if (directors != null) {
-            int maxId = directorStorage.getCountOfDirectors();
-            for (Director director : directors) {
-                if (director.getId() > maxId) {
-                    throw new NoSuchElementException();
-                }
-            }
+    void validateDirectors(List<Director> directors) {
+        try {
+            directors.forEach(director -> getDirectorById(director.getId()));
+        } catch (NoSuchElementException e) {
+            throw new ValidationException(e.getMessage());
         }
     }
 
