@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DirectorDbStorage implements DirectorStorage {
-
     final JdbcTemplate jdbcTemplate;
     final RowMapper<Director> directorMapper;
 
@@ -57,9 +56,7 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public Optional<Director> getById(long id) {
         try {
-            return Optional.ofNullable(
-                    jdbcTemplate.queryForObject(GET_DIRECTOR_BY_ID, directorMapper, id)
-            );
+            return Optional.ofNullable(jdbcTemplate.queryForObject(GET_DIRECTOR_BY_ID, directorMapper, id));
         } catch (Exception exception) {
             return Optional.empty();
         }
@@ -68,17 +65,15 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public Director create(Director director) {
         jdbcTemplate.update(CREATE_DIRECTOR, director.getName());
-
-        return jdbcTemplate.queryForObject(GET_DIRECTOR_BY_NAME,
-                directorMapper, director.getName());
+        return jdbcTemplate.queryForObject(GET_DIRECTOR_BY_NAME, directorMapper, director.getName());
     }
 
     @Override
     public Director update(Director directorNewInfo) {
-        getById(directorNewInfo.getId());
-
-        jdbcTemplate.update(UPDATE_DIRECTOR_NAME, directorNewInfo.getName(), directorNewInfo.getId());
-
+        int rowsUpdated = jdbcTemplate.update(UPDATE_DIRECTOR_NAME, directorNewInfo.getName(), directorNewInfo.getId());
+        if (rowsUpdated == 0) {
+            throw new NoSuchElementException("Директор с id " + directorNewInfo.getId() + " не найден");
+        }
         return directorNewInfo;
     }
 
@@ -122,8 +117,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public void loadDirectors(Collection<Film> films) {
-
-        if (films.size() != 0) {
+        if (!films.isEmpty()) {
             String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
             final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, film -> film));
             jdbcTemplate.query(GET_FILMS_DIRECTORS

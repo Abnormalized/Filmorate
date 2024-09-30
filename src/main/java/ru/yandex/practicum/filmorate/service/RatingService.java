@@ -19,17 +19,20 @@ public class RatingService {
         return ratingStorage.getAll();
     }
 
-    public Rating getById(int id) {
-        return ratingStorage.getById(id).orElseThrow(NoSuchElementException::new);
+    public Rating getById(long id) {
+        return ratingStorage.getById(id)
+                .orElseThrow(() -> new NoSuchElementException("Рейтинг с id " + id + " не найден"));
     }
 
-    void validateMpaId(long id) {
-        if (id > ratingStorage.getCountOfMpa()) {
-            throw new ValidationException();
+    public void validateMpa(long id) {
+        try {
+            getById(id);
+        } catch (NoSuchElementException e) {
+            throw new ValidationException(e.getMessage());
         }
     }
 
-    void setFilmRating(Film film) {
+    public void setFilmRating(Film film) {
         ratingStorage.setFilmRating(film);
     }
 }

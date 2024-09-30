@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.util.Collection;
 import java.util.Optional;
 
@@ -10,13 +8,13 @@ public interface FilmStorage {
 
     Optional<Film> getById(long id);
 
-    Film create(@RequestBody Film film);
+    Film create(Film film);
 
     Collection<Film> findAll();
 
     Collection<Film> findAll(String searchQuery, String by);
 
-    Film update(@RequestBody Film filmNewInfo);
+    Film update(Film filmNewInfo);
 
     Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year);
 

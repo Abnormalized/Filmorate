@@ -21,17 +21,15 @@ public class GenreService {
     }
 
     public Genre getById(int id) {
-        return genreStorage.getById(id).orElseThrow(NoSuchElementException::new);
+        return genreStorage.getById(id)
+                .orElseThrow(() -> new NoSuchElementException("Жанр с id " + id + " не найден"));
     }
 
     void validateGenreId(List<Genre> genres) {
-        if (genres != null) {
-            int maxId = genreStorage.getCountOfGenres();
-            for (Genre genre : genres) {
-                if (genre.getId() > maxId) {
-                    throw new ValidationException();
-                }
-            }
+        try {
+            genres.forEach(genre -> getById(genre.getId()));
+        } catch (NoSuchElementException e) {
+            throw new ValidationException(e.getMessage());
         }
     }
 
