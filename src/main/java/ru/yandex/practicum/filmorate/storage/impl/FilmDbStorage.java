@@ -60,8 +60,10 @@ public class FilmDbStorage implements FilmStorage {
                             ORDER BY COMMON_LIKES_COUNT.film_count, LIKES_COUNT.like_count""";
 
     private static final String SQL_SEARCH_BEG = """
-               SELECT f.*
+               SELECT f.*,
+                      r.rating_name
                FROM films f
+               LEFT JOIN rating r ON f.rating_id = r.rating_id
                LEFT JOIN user_liked_films l ON l.film_id = f.film_id
                LEFT JOIN director_films df ON df.film_id = f.film_id
                LEFT JOIN directors d ON d.director_id = df.director_id

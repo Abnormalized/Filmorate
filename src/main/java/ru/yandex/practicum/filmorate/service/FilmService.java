@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmService {
-
     final FilmStorage filmStorage;
     final GenreService genreService;
     final RatingService ratingService;
@@ -30,6 +29,7 @@ public class FilmService {
     public Collection<Film> findAll(String searchQuery, String by) {
         Collection<Film> films = filmStorage.findAll(searchQuery, by);
         loadGenres(films);
+        loadDirectors(films);
         return films;
     }
 
