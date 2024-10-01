@@ -5,15 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.EventType;
-import ru.yandex.practicum.filmorate.model.Feed;
-import ru.yandex.practicum.filmorate.model.Operation;
-import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.sql.SQLException;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -30,6 +24,6 @@ public class ValidationService {
     }
 
     public void validateUserPresenceById(long id) {
-        userStorage.getById(id).orElseThrow(() -> new NoSuchElementException("Пользователь с id " + id + " не найден"));;
+        userStorage.getById(id).orElseThrow(() -> new NoSuchElementException("Пользователь с id " + id + " не найден"));
     }
 }
