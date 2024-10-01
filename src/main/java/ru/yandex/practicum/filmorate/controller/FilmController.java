@@ -70,8 +70,7 @@ public class FilmController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/common")
-    public Collection<Film> getCommonFilms(@Positive @PathParam("userId") long userId,
-                                           @Positive @PathParam("friendId") long friendId) {
+    public Collection<Film> getCommonFilms(@PathParam("userId") long userId, @PathParam("friendId") long friendId) {
         return userService.getCommonFilms(userId, friendId);
     }
 
