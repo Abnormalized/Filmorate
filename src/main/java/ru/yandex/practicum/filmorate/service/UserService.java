@@ -42,9 +42,10 @@ public class UserService {
     }
 
     public Collection<Film> getCommonFilms(long userId1, long userId2) {
-        Collection<Long> filmsSet = new HashSet<>(userStorage.getLikedFilms(getUserById(userId1)));
-        filmsSet.retainAll(userStorage.getLikedFilms(getUserById(userId2)));
-        return filmsSet.stream()
+        Collection<Long> user1LikedFilmIds = new ArrayList<>(userStorage.getLikedFilms(getUserById(userId1)));
+        Collection<Long> user2LikedFilmIds = new ArrayList<>(userStorage.getLikedFilms(getUserById(userId2)));
+        return user1LikedFilmIds.stream()
+                .filter(user2LikedFilmIds::contains)
                 .map(filmService::getFilmById)
                 .toList();
     }
