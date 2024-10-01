@@ -4,7 +4,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Operation;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
@@ -19,6 +21,8 @@ public class FilmService {
     final GenreService genreService;
     final RatingService ratingService;
     final DirectorService directorService;
+    final FeedService feedService;
+    final ValidationService validationService;
 
     public Collection<Film> findAll() {
         Collection<Film> films = filmStorage.findAll();
@@ -42,10 +46,6 @@ public class FilmService {
         return film;
     }
 
-    public void validateFilmPresenceById(long id) {
-        filmStorage.getById(id).orElseThrow(() -> new NoSuchElementException("Фильм с id " + id + " не найден"));
-    }
-
     public Film create(Film film) {
         ratingService.validateMpaId(film.getMpa().getId());
         genreService.validateGenreId(film.getGenres());
@@ -56,25 +56,35 @@ public class FilmService {
     }
 
     public Film update(Film filmNewInfo) {
+        validationService.validateFilmPresenceById(filmNewInfo.getId());
         Film film = filmStorage.update(filmNewInfo);
         directorService.setFilmDirectors(film);
         return film;
     }
 
     public void addLike(long userId, long filmId) {
+        validationService.validateFilmPresenceById(filmId);
+        validationService.validateUserPresenceById(userId);
         if (!filmStorage.containsLike(userId, filmId)) {
             filmStorage.addLike(userId, filmId);
+            feedService.addFeed(userId, EventType.LIKE, Operation.ADD, filmId);
         }
     }
 
     public void removeLike(long userId, long filmId) {
+        validationService.validateFilmPresenceById(filmId);
+        validationService.validateUserPresenceById(userId);
         if (filmStorage.containsLike(userId, filmId)) {
             filmStorage.removeLike(userId, filmId);
+            feedService.addFeed(userId, EventType.LIKE, Operation.REMOVE, filmId);
         }
     }
 
     public Collection<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
-        return filmStorage.getPopularFilm(count, genreId, year);
+        Collection<Film> films = filmStorage.getPopularFilm(count, genreId, year);
+        loadGenres(films);
+        loadDirectors(films);
+        return films;
     }
 
     public Collection<Film> getDirectorFilms(long directorId, String sortType) {
@@ -104,6 +114,7 @@ public class FilmService {
     }
 
     public void deleteFilmById(long id) {
+        validationService.validateFilmPresenceById(id);
         filmStorage.deleteFilmById(id);
     }
 }
