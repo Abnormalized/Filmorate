@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
 
@@ -31,6 +32,7 @@ import java.util.Collection;
 public class FilmController {
 
     private final FilmService filmService;
+    private final UserService userService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -64,6 +66,12 @@ public class FilmController {
     public Collection<Film> getDirectorFilms(@PathVariable(value = "director-id") long directorId,
                                              @PathParam("sortBy") String sortBy) {
         return filmService.getDirectorFilms(directorId, sortBy);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/common")
+    public Collection<Film> getCommonFilms(@PathParam("userId") long userId, @PathParam("friendId") long friendId) {
+        return userService.getCommonFilms(userId, friendId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
