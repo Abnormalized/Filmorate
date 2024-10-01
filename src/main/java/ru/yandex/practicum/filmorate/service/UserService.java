@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -35,6 +36,15 @@ public class UserService {
 
     public User update(User userNewInfo) {
         return userStorage.update(userNewInfo);
+    }
+
+    public Collection<Film> getCommonFilms(long userId1, long userId2) {
+        Collection<Long> user1LikedFilmIds = new ArrayList<>(userStorage.getLikedFilms(getUserById(userId1)));
+        Collection<Long> user2LikedFilmIds = new ArrayList<>(userStorage.getLikedFilms(getUserById(userId2)));
+        return user1LikedFilmIds.stream()
+                .filter(user2LikedFilmIds::contains)
+                .map(filmService::getFilmById)
+                .toList();
     }
 
     public void addUserToFriend(long userId1, long userId2) {
