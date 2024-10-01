@@ -17,11 +17,12 @@ public class UserService {
     private final FeedService feedService;
 
     public User getUserById(long id) {
-        return userStorage.getById(id);
-    }
 
-    public void validateUserPresenceById(long id) {
-        userStorage.getById(id);
+        User user = getUserNoOptional(id);
+        user.setUserFriends(userStorage.getAllFriends(user));
+        user.setLikedFilms(userStorage.getLikedFilms(user));
+
+        return user;
     }
 
     public Collection<User> findAll() {
@@ -33,6 +34,7 @@ public class UserService {
     }
 
     public User update(User userNewInfo) {
+        getUserNoOptional(userNewInfo.getId());
         return userStorage.update(userNewInfo);
     }
 
@@ -45,25 +47,26 @@ public class UserService {
     }
 
     public void addUserToFriend(long userId1, long userId2) {
-        User user1 = userStorage.getById(userId1);
-        User user2 = userStorage.getById(userId2);
-        if (getFriendList(userId1).contains(userId2)) {
+        User user1 = getUserById(userId1);
+        User user2 = getUserById(userId2);
+        if (user1.getUserFriends().contains(userId2)) {
             return;
         }
         if (userStorage.getAskedUsers(userId1).contains(userId2)) {
             userStorage.acceptFriend(user1, user2);
+            feedService.addFeed(userId1, EventType.FRIEND, Operation.ADD, userId2);
             return;
         }
         userStorage.addFriend(user1, user2);
+        feedService.addFeed(userId1, EventType.FRIEND, Operation.ADD, userId2);
     }
 
     public void deleteUserFromFriend(long userId1, long userId2) {
-        User user1 = userStorage.getById(userId1);
-        User user2 = userStorage.getById(userId2);
-        if (userStorage.getById(userId2) == null) {
-            throw new NoSuchElementException();
-        }
-        if (!userStorage.getAllFriends(getUserById(userId1)).contains(userId2)) {
+
+        User user1 = getUserById(userId1);
+        User user2 = getUserById(userId2);
+
+        if (!user1.getUserFriends().contains(userId2)) {
             return;
         }
         userStorage.deleteFriend(user1, user2);
@@ -72,24 +75,38 @@ public class UserService {
 
     public List<Long> getJointFriends(long userId1, long userId2) {
 
-        return userStorage.getById(userId1).getUserFriends().stream()
-                .filter(friendId -> userStorage.getById(userId2).getUserFriends().contains(friendId))
+
+        return getUserById(userId1).getUserFriends().stream()
+                .filter(friendId -> getUserById(userId2).getUserFriends().contains(friendId))
                 .toList();
     }
 
     public List<User> getFriendList(long userId) {
-        return userStorage.getAllFriends(getUserById(userId)).stream().map(this::getUserById).toList();
+        return getUserById(userId).getUserFriends().stream().map(this::getUserById).toList();
     }
 
     public Collection<Film> getRecommendations(long userId) {
 
-        if (userStorage.getById(userId) == null) {
-            throw new NoSuchElementException();
-        }
+        getUserNoOptional(userId);
         return filmService.getRecommendations(userId);
     }
 
     public void deleteUserById(long id) {
+        getUserNoOptional(id);
         userStorage.deleteUserById(id);
+    }
+
+    public Collection<Feed> getFeeds(long id) {
+        getUserNoOptional(id);
+        return feedService.getFeeds(id);
+    }
+
+    public User getUserNoOptional(long userId) {
+
+        Optional<User> optionalUser = userStorage.getById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchElementException("Пользователь с id + userId2 + не найден");
+        }
+        return optionalUser.get();
     }
 }
