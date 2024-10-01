@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -8,10 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -19,21 +17,19 @@ import java.util.Set;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final UserMapper userMapper;
+
+    public static String GET_USER_QUERY = "SELECT * FROM users WHERE user_id = ?";
 
     @Override
-    public User getById(long id) {
-        Integer res = jdbcTemplate.queryForObject(
-                "SELECT COUNT(user_id) AS sum FROM users WHERE user_id = ?",
-                (rs, rowNum) -> rs.getInt("sum"), id);
-        if (res == null || res == 0) {
-            throw new NoSuchElementException("Пользователь с id " + id + " не найден");
-        }
-        User user = jdbcTemplate.queryForObject("SELECT * FROM users WHERE user_id = ?", new UserMapper(), id);
+    public Optional<User> getById(long id) {
 
-        assert user != null;
-        user.setUserFriends(getAllFriends(user));
-        user.setLikedFilms(getLikedFilms(user));
-        return user;
+        try {
+            User result = jdbcTemplate.queryForObject(GET_USER_QUERY, userMapper, id);
+            return Optional.ofNullable(result);
+        } catch (EmptyResultDataAccessException ignored) {
+            return Optional.empty();
+        }
     }
 
     @Override

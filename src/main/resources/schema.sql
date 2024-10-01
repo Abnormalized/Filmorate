@@ -7,7 +7,8 @@ DROP TABLE IF EXISTS rating,
                      friend_users,
                      directors,
                      director_films,
-                     reviews;
+                     reviews,
+                     events;
 
 CREATE TABLE IF NOT EXISTS rating (
 	rating_id int PRIMARY KEY auto_increment,
@@ -63,4 +64,15 @@ CREATE TABLE IF NOT EXISTS reviews (
   content varchar(350),
   is_positive boolean,
   useful_rating bigint
+);
+CREATE TABLE IF NOT EXISTS EVENTS
+(
+    EVENT_ID   BIGINT PRIMARY KEY auto_increment,
+    TIME       BIGINT            not null,
+    USER_ID    BIGINT               not null,
+    EVENT_TYPE CHARACTER VARYING(6) not null,
+    OPERATION  CHARACTER VARYING(6) not null,
+    ENTITY_ID  BIGINT               not null,
+    constraint EVENTS_PK
+        primary key (EVENT_ID)
 );
