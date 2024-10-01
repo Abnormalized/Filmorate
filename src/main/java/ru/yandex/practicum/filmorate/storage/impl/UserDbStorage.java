@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @Component
 @AllArgsConstructor
+@Validated
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
