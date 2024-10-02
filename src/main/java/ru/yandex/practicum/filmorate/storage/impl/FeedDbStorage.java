@@ -27,7 +27,7 @@ public class FeedDbStorage implements FeedStorage {
             WHERE USER_ID = ?
             ORDER BY TIME
             """;
-    private static final String INSERT_FEED = """        
+    private static final String INSERT_FEED = """
             INSERT INTO EVENTS(TIME, USER_ID, EVENT_TYPE, OPERATION, ENTITY_ID)
             VALUES (?, ?, ?, ?, ?)
             """;
