@@ -31,13 +31,9 @@ public class ReviewDbStorage implements ReviewStorage {
             """;
     private static final String SQL_UPD_REVIEW = """
             UPDATE reviews
-            SET user_id = ?,
-                film_id = ?,
-                content = ?,
-                is_positive = ?,
-                useful_rating = ?
-            WHERE review_id = ?
-               OR (user_id = ? AND film_id = ?)
+            SET content = ?,
+                is_positive = ?
+             WHERE review_id = ?
             """;
     private static final String SQL_DEL_REVIEW = """
             DELETE  FROM reviews
@@ -51,14 +47,14 @@ public class ReviewDbStorage implements ReviewStorage {
     private static final String SQL_GET_ALL_REVIEWS = """
             SELECT *
             FROM reviews
-            ORDER BY review_id DESC, useful_rating DESC
+            ORDER BY useful_rating DESC
             LIMIT ?
             """;
     private static final String SQL_GET_ALL_REVIEWS_BY_FILM_ID = """
             SELECT *
             FROM reviews
             WHERE film_id = ?
-            ORDER BY review_id DESC, useful_rating DESC
+            ORDER BY useful_rating DESC
             LIMIT ?
             """;
     private static final String SQL_UPD_USEFUL = """
@@ -120,18 +116,13 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Review updateReview(Review review) {
         int totalRowsUpdated = jdbcT.update(SQL_UPD_REVIEW,
-                review.getUserId(),
-                review.getFilmId(),
                 review.getContent(),
                 review.getIsPositive(),
-                review.getUseful(),
-                review.getReviewId(),
-                review.getUserId(),
-                review.getFilmId());
+                review.getReviewId());
         if (totalRowsUpdated == 0) {
             throw new NoSuchElementException("Отзыв с id " + review.getReviewId() + " не найден");
         }
-        return review;
+        return getReviewById(review.getReviewId()).get();
     }
 
     @Override
@@ -142,16 +133,21 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Review manageLike(Review review, ReviewStorage.LikeManageAction action) {
         long useful = review.getUseful();
-        switch (action) {
-            case ADD_LIKE, DEL_DISLIKE -> ++useful;
-            case DEL_LIKE -> --useful;
-            case ADD_DISLIKE -> {
+
+        if (review.getIsPositive()) {
+            if (action == LikeManageAction.ADD_LIKE || action == LikeManageAction.DEL_DISLIKE) {
+                ++useful;
+            } else {
                 --useful;
-                if (useful == 0) {
-                    --useful;
-                }
+            }
+        } else {
+            if (action == LikeManageAction.ADD_DISLIKE || action == LikeManageAction.DEL_LIKE) {
+                --useful;
+            } else {
+                ++useful;
             }
         }
+
         int totalRowsUpdated = jdbcT.update(SQL_UPD_USEFUL, useful, review.getReviewId());
         if (totalRowsUpdated == 0) {
             throw new NoSuchElementException("Отзыв с id " + review.getReviewId() + " не найден");

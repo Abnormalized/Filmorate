@@ -6,7 +6,9 @@ import ru.yandex.practicum.filmorate.service.ReviewService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 
@@ -22,9 +24,11 @@ public class ReviewController {
     private final ReviewService service;
 
     @GetMapping
-    public Collection<Review> getReviewsByFilmId(@RequestParam(defaultValue = "0") long id,
-                                                 @RequestParam(defaultValue = "10") @Positive long count) {
-        return service.getReviewsByFilmId(id, count);
+    public List<Review> getReviewsByFilmId(@RequestParam(defaultValue = "0") long filmId,
+                                           @RequestParam(defaultValue = "10") @Positive long count) {
+        return service.getReviewsByFilmId(filmId, count).stream()
+                .sorted(Comparator.comparingLong(Review::getUseful).reversed())
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

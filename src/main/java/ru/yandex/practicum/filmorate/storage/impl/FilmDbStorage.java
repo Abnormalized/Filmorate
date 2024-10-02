@@ -64,14 +64,14 @@ public class FilmDbStorage implements FilmStorage {
                       r.rating_name
                FROM films f
                LEFT JOIN rating r ON f.rating_id = r.rating_id
-               LEFT JOIN user_liked_films l ON l.film_id = f.film_id
-               LEFT JOIN director_films df ON df.film_id = f.film_id
+               LEFT JOIN user_liked_films l ON f.film_id = l.film_id
+               LEFT JOIN director_films df ON f.film_id = df.film_id
                LEFT JOIN directors d ON d.director_id = df.director_id
                WHERE
             """;
     private static final String SQL_SEARCH_END = """
-            GROUP BY f.film_id
-            ORDER BY COUNT(l.film_id) DESC
+             GROUP BY f.film_id
+             ORDER BY COUNT(l.film_id) DESC
             """;
 
     @Override
@@ -149,14 +149,14 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> findAll(String searchQuery, String by) {
         searchQuery = "%" + searchQuery + "%";
-        String sqlSearchMid = ".name LIKE ?";
+        String sqlSearchMid = ".name) LIKE UPPER(?)";
         int paramsCnt = 1;
 
         switch (by) {
-            case "title" -> sqlSearchMid = "f" + sqlSearchMid;
-            case "director" -> sqlSearchMid = "d" + sqlSearchMid;
+            case "title" -> sqlSearchMid = "UPPER(f" + sqlSearchMid;
+            case "director" -> sqlSearchMid = "UPPER(d" + sqlSearchMid;
             case "title,director", "director,title" -> {
-                sqlSearchMid = "f" + sqlSearchMid + " OR " + "d" + sqlSearchMid;
+                sqlSearchMid = "UPPER(f" + sqlSearchMid + " OR " + "UPPER(d" + sqlSearchMid;
                 ++paramsCnt;
             }
             default -> throw new RuntimeException("Невалидные параметры запроса " + by);
