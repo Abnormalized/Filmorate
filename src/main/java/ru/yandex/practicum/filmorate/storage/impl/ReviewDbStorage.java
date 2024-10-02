@@ -134,17 +134,14 @@ public class ReviewDbStorage implements ReviewStorage {
     public Review manageLike(Review review, ReviewStorage.LikeManageAction action) {
         long useful = review.getUseful();
 
-        if (review.getIsPositive()) {
-            if (action == LikeManageAction.ADD_LIKE || action == LikeManageAction.DEL_DISLIKE) {
-                ++useful;
-            } else {
+        switch (action) {
+            case ADD_LIKE, DEL_DISLIKE -> ++useful;
+            case DEL_LIKE -> --useful;
+            case ADD_DISLIKE -> {
                 --useful;
-            }
-        } else {
-            if (action == LikeManageAction.ADD_DISLIKE || action == LikeManageAction.DEL_LIKE) {
-                --useful;
-            } else {
-                ++useful;
+                if (useful == 0) {
+                    --useful;
+                }
             }
         }
 
