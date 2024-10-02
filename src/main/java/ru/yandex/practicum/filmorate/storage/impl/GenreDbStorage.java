@@ -35,20 +35,15 @@ public class GenreDbStorage implements GenreStorage {
         }
     }
 
-    public List<Genre> findByIds(List<Long> genreIds) {
-        final String query = "SELECT genre_id,genre_name FROM genres WHERE genre_id IN (?)";
-        return jdbcTemplate.query(query, genreMapper, genreIds);
-    }
-
     @Override
     public void setFilmGenres(Film film) {
         final String sqlQuery = """
-                SELECT fg.genre_id,
-                       g.name AS genre_name
-                FROM films_genre fg
-                JOIN genres g ON g.genre_id = fg.genre_id
-                WHERE film_id = ?
-            """;
+                    SELECT fg.genre_id,
+                           g.name AS genre_name
+                    FROM films_genre fg
+                    JOIN genres g ON g.genre_id = fg.genre_id
+                    WHERE film_id = ?
+                """;
         film.setGenres(new ArrayList<>(jdbcTemplate.query(sqlQuery,
                 genreMapper, film.getId())));
     }
@@ -58,9 +53,9 @@ public class GenreDbStorage implements GenreStorage {
         if (genres != null) {
             resetGenresInfoInFilm(filmId);
             String genreSqlQuery = """
-                        INSERT INTO films_genre(film_id, genre_id)
-                        VALUES (?, ?)
-                """;
+                            INSERT INTO films_genre(film_id, genre_id)
+                            VALUES (?, ?)
+                    """;
             for (Genre genre : genres) {
                 if (!containsFilmGenre(filmId, genre.getId())) {
                     jdbcTemplate.update(genreSqlQuery, filmId, genre.getId());
@@ -79,14 +74,9 @@ public class GenreDbStorage implements GenreStorage {
                 genreId, filmId).isEmpty();
     }
 
-    @Override
-    public int getCountOfGenres() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(genre_id) FROM genres", Integer.class);
-    }
-
     public void loadGenres(Collection<Film> films) {
 
-        if (films.size() != 0) {
+        if (!films.isEmpty()) {
             String inSql = String.join(",", Collections.nCopies(films.size(), "?"));
             final Map<Long, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, film -> film));
             jdbcTemplate.query("SELECT * FROM GENRES G, FILMS_GENRE FG WHERE FG.GENRE_ID = G.GENRE_ID AND FG.FILM_ID IN (#ids)"

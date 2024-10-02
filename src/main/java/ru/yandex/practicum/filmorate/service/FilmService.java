@@ -67,8 +67,8 @@ public class FilmService {
         validationService.validateUserPresenceById(userId);
         if (!filmStorage.containsLike(userId, filmId)) {
             filmStorage.addLike(userId, filmId);
-            feedService.addFeed(userId, EventType.LIKE, Operation.ADD, filmId);
         }
+        feedService.addFeed(userId, EventType.LIKE, Operation.ADD, filmId);
     }
 
     public void removeLike(long userId, long filmId) {

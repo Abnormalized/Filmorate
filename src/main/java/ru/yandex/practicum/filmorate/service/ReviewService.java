@@ -36,10 +36,9 @@ public class ReviewService {
     }
 
     public Review updateReview(Review review) {
-        validationService.validateUserPresenceById(review.getUserId());
-        validationService.validateFilmPresenceById(review.getFilmId());
+        getReviewById(review.getReviewId());
         Review updatedReview = reviewStorage.updateReview(review);
-        feedService.addFeed(review.getUserId(), EventType.REVIEW, Operation.UPDATE, review.getReviewId());
+        feedService.addFeed(updatedReview.getUserId(), EventType.REVIEW, Operation.UPDATE, review.getReviewId());
         return updatedReview;
     }
 
@@ -53,8 +52,7 @@ public class ReviewService {
     public Review manageLike(long reviewId, long userId, ReviewStorage.LikeManageAction action) {
         validationService.validateUserPresenceById(userId);
         Review review = getReviewById(reviewId);
-        Review newReview = reviewStorage.manageLike(review, action);
-        feedService.addFeed(userId, EventType.REVIEW, Operation.UPDATE, reviewId);
-        return  newReview;
+
+        return reviewStorage.manageLike(review, action);
     }
 }

@@ -2,8 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
@@ -18,7 +17,7 @@ public class UserService {
 
     public User getUserById(long id) {
 
-        User user = getUserNoOptional(id);
+        User user = getUserIfExists(id);
         user.setUserFriends(userStorage.getAllFriends(user));
         user.setLikedFilms(userStorage.getLikedFilms(user));
 
@@ -30,11 +29,13 @@ public class UserService {
     }
 
     public User create(User user) {
+        checkUserName(user);
         return userStorage.create(user);
     }
 
     public User update(User userNewInfo) {
-        getUserNoOptional(userNewInfo.getId());
+        getUserIfExists(userNewInfo.getId());
+        checkUserName(userNewInfo);
         return userStorage.update(userNewInfo);
     }
 
@@ -54,7 +55,7 @@ public class UserService {
         }
         if (userStorage.getAskedUsers(userId1).contains(userId2)) {
             userStorage.acceptFriend(user1, user2);
-            feedService.addFeed(userId1, EventType.FRIEND, Operation.ADD, userId2);
+            feedService.addFeed(userId1, EventType.FRIEND, Operation.UPDATE, userId2);
             return;
         }
         userStorage.addFriend(user1, user2);
@@ -87,26 +88,33 @@ public class UserService {
 
     public Collection<Film> getRecommendations(long userId) {
 
-        getUserNoOptional(userId);
+        getUserIfExists(userId);
         return filmService.getRecommendations(userId);
     }
 
     public void deleteUserById(long id) {
-        getUserNoOptional(id);
+        getUserIfExists(id);
         userStorage.deleteUserById(id);
     }
 
     public Collection<Feed> getFeeds(long id) {
-        getUserNoOptional(id);
+        getUserIfExists(id);
         return feedService.getFeeds(id);
     }
 
-    public User getUserNoOptional(long userId) {
+    private User getUserIfExists(long userId) {
 
         Optional<User> optionalUser = userStorage.getById(userId);
         if (optionalUser.isEmpty()) {
             throw new NoSuchElementException("Пользователь с id + userId2 + не найден");
         }
         return optionalUser.get();
+    }
+
+    private void checkUserName(User user) {
+
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }

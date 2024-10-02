@@ -38,11 +38,11 @@ public class FeedDbStorage implements FeedStorage {
     }
 
     @Override
-    public void addFeed(Long userId, EventType eventType, Operation operation, Long entityId) throws SQLException {
+    public Feed addFeed(Long userId, EventType eventType, Operation operation, Long entityId) throws SQLException {
 
-       long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-       int matches = jdbcTemplate.update(INSERT_FEED,
+        int matches = jdbcTemplate.update(INSERT_FEED,
                 currentTime,
                 userId,
                 eventType.toString(),
@@ -53,5 +53,13 @@ public class FeedDbStorage implements FeedStorage {
             throw new SQLException("Не удалось добавить событиею Пользователь: " + userId
                     + " время: " + currentTime + " тип: " + eventType);
         }
+
+        String returnSqlQuery = """
+                SELECT * FROM EVENTS
+                WHERE USER_ID = ?
+                ORDER BY EVENT_ID DESC
+                LIMIT(1)""";
+
+        return jdbcTemplate.queryForObject(returnSqlQuery, rowMapper, userId);
     }
 }

@@ -11,8 +11,6 @@ public interface GenreStorage {
 
     Optional<Genre> getById(int id);
 
-    int getCountOfGenres();
-
     void setFilmGenres(Film film);
 
     void saveGenresInfo(long filmId, List<Genre> genres);

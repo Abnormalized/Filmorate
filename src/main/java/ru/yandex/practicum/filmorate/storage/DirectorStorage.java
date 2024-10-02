@@ -17,8 +17,6 @@ public interface DirectorStorage {
 
     void delete(long id);
 
-    int getCountOfDirectors();
-
     void saveDirectorsInfo(long filmId, List<Director> directors);
 
     boolean containsDirectorFilm(long directorId, long filmId);

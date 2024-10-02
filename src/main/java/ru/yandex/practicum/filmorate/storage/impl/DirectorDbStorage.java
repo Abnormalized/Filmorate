@@ -27,7 +27,6 @@ public class DirectorDbStorage implements DirectorStorage {
     static final String CREATE_DIRECTOR = "INSERT INTO directors(name) VALUES (?)";
     static final String UPDATE_DIRECTOR_NAME = "UPDATE directors SET name = ? WHERE director_id = ?";
     static final String DELETE_DIRECTOR_BY_ID = "DELETE FROM directors WHERE director_id = ?";
-    static final String GET_COUNT_OF_DIRECTORS = "SELECT COUNT(director_id) FROM directors";
     static final String SET_DIRECTOR_FILM = "INSERT INTO director_films(director_id, film_id) VALUES (?, ?)";
     static final String DELETE_FILM_DIRECTORS = "DELETE FROM director_films WHERE film_id = ?";
     static final String DELETE_FILM_DIRECTORS_BY_DIRECTOR_ID = "DELETE FROM director_films WHERE director_id = ?";
@@ -82,12 +81,6 @@ public class DirectorDbStorage implements DirectorStorage {
     public void delete(long id) {
         jdbcTemplate.update(DELETE_FILM_DIRECTORS_BY_DIRECTOR_ID, id);
         jdbcTemplate.update(DELETE_DIRECTOR_BY_ID, id);
-    }
-
-    @Override
-    public int getCountOfDirectors() {
-        Integer num = jdbcTemplate.queryForObject(GET_COUNT_OF_DIRECTORS, Integer.class);
-        return Objects.requireNonNullElse(num, 0);
     }
 
     @Override

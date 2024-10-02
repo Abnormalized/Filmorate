@@ -11,5 +11,5 @@ public interface FeedStorage {
 
     Collection<Feed> getFeeds(long id);
 
-    void addFeed(Long userId, EventType eventType, Operation operation, Long entityId) throws SQLException;
+    Feed addFeed(Long userId, EventType eventType, Operation operation, Long entityId) throws SQLException;
 }
