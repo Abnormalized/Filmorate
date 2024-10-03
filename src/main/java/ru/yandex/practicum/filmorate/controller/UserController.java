@@ -48,8 +48,8 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("{id}/friends/common/{otherId}")
-    public Collection<User> getJointFriends(@PathVariable long id, @PathVariable long otherId) {
+    @GetMapping("{id}/friends/common/{other-id}")
+    public Collection<User> getJointFriends(@PathVariable long id, @PathVariable(value = "other-id") long otherId) {
         return userService.getJointFriends(id, otherId).stream().map(this::getUserById).collect(Collectors.toSet());
     }
 
@@ -83,10 +83,9 @@ public class UserController {
         return userService.getRecommendations(id);
     }
 
-
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("{userId}")
-    public void deleteUserById(@PathVariable @Positive long userId) {
+    @DeleteMapping("{user-id}")
+    public void deleteUserById(@PathVariable(value = "user-id") @Positive long userId) {
         userService.deleteUserById(userId);
     }
 
