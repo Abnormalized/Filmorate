@@ -102,8 +102,8 @@ public class FilmController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("{filmId}")
-    public void deleteFilmById(@PathVariable @Positive long filmId) {
+    @DeleteMapping("{film-id}")
+    public void deleteFilmById(@PathVariable("film-id") @Positive long filmId) {
         filmService.deleteFilmById(filmId);
     }
 }
