@@ -1,19 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.time.DurationMin;
 import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     long id;
@@ -26,10 +27,20 @@ public class Film {
     @NotNull
     @DurationMin
     Duration duration;
+    @NotNull
     Rating mpa;
-    List<Genre> genres;
+    List<Genre> genres = new ArrayList<>();
+    List<Director> directors = new ArrayList<>();
 
     public long getDuration() {
         return duration.toSeconds();
+    }
+
+    public void addGenre(Genre genre) {
+        genres.add(genre);
+    }
+
+    public void addDirector(Director director) {
+        directors.add(director);
     }
 }

@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS rating,
+                     films,
+                     genres,
+                     films_genre,
+                     users,
+                     user_liked_films,
+                     friend_users,
+                     directors,
+                     director_films,
+                     reviews,
+                     events;
+
 CREATE TABLE IF NOT EXISTS rating (
 	rating_id int PRIMARY KEY auto_increment,
 	rating_name varchar
@@ -17,7 +29,7 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS films_genre (
     FILM_ID bigint,
     GENRE_ID int,
-	FOREIGN KEY (film_id) REFERENCES films (film_id),
+	FOREIGN KEY (film_id) REFERENCES films (film_id) ON DELETE CASCADE,
 	FOREIGN KEY (genre_id) REFERENCES genres (genre_id)
 );
 CREATE TABLE IF NOT EXISTS users (
@@ -28,11 +40,39 @@ CREATE TABLE IF NOT EXISTS users (
     birthday date
 );
 CREATE TABLE IF NOT EXISTS user_liked_films (
-	user_id bigint REFERENCES users (user_id),
-	film_id bigint REFERENCES films (film_id)
+	user_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+	film_id bigint REFERENCES films (film_id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS friend_users (
-	requester_id bigint REFERENCES users (user_id),
-	responser_id bigint REFERENCES users (user_id),
+	requester_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+	responser_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
 	accepted boolean
+);
+CREATE TABLE IF NOT EXISTS directors (
+	director_id bigint PRIMARY KEY auto_increment,
+	name varchar(50)
+);
+CREATE TABLE IF NOT EXISTS director_films (
+    director_id bigint REFERENCES directors (director_id) ON DELETE CASCADE,
+    film_id bigint REFERENCES films (film_id) ON DELETE CASCADE,
+    PRIMARY KEY (director_id, film_id)
+);
+CREATE TABLE IF NOT EXISTS reviews (
+  review_id bigint PRIMARY KEY auto_increment,
+  user_id bigint REFERENCES users (user_id) ON DELETE CASCADE,
+  film_id bigint REFERENCES films (film_id) ON DELETE CASCADE,
+  content varchar(350),
+  is_positive boolean,
+  useful_rating bigint
+);
+CREATE TABLE IF NOT EXISTS EVENTS
+(
+    EVENT_ID   BIGINT PRIMARY KEY auto_increment,
+    TIME       BIGINT            not null,
+    USER_ID    BIGINT               not null,
+    EVENT_TYPE CHARACTER VARYING(6) not null,
+    OPERATION  CHARACTER VARYING(6) not null,
+    ENTITY_ID  BIGINT               not null,
+    constraint EVENTS_PK
+        primary key (EVENT_ID)
 );

@@ -11,11 +11,13 @@ public interface GenreStorage {
 
     Optional<Genre> getById(int id);
 
-    int getCountOfGenres();
-
-    Film setFilmGenres(Film film);
+    void setFilmGenres(Film film);
 
     void saveGenresInfo(long filmId, List<Genre> genres);
 
     boolean containsFilmGenre(long genreId, long filmId);
+
+    void loadGenres(Collection<Film> films);
+
+    List<Genre> findAllByIdArray(int[] ids);
 }
